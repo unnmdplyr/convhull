@@ -1,0 +1,246 @@
+
+		cout << "vertex ids: ";
+		for ( vector<vid_t>::const_iterator vit = extVertIds.begin(); vit != extVertIds.end(); ++vit )
+			cout << " " << *vit;
+		cout << endl;
+
+
+
+										
+			cout << "vertex id: " << *it;
+			pair<vid_t,vid_t> prev = pair<vid_t,vid_t>(*(it-1), *it);
+			cout << " prev he: " << prev.first << " " << prev.second;
+			pair<vid_t,vid_t> curr = pair<vid_t,vid_t>(*it, *(it+1));
+			cout << " curr he: " << curr.first << " " << curr.second;
+			pair<vid_t,vid_t> next = pair<vid_t,vid_t>(*(it+1), *(it+2));
+			cout << " next he: " << next.first << " " << next.second;
+			
+		cout << endl;
+
+
+
+		half_edge_t::const_iterator heit = half_edges.begin();
+		for ( ; heit != half_edges.end(); ++heit )
+		{
+			cout << "he: (" << heit->id.first << " " << heit->id.second << ")";
+			cout << " prev " << heit->prev.first << " " << heit->prev.second;
+			cout << " next " << heit->next.first << " " << heit->next.second;
+			cout << " incFace " << heit->incidentFace;
+			cout << endl;
+		}
+
+
+
+
+		//	Check vertices
+		std::vector<ch::vid_t> extVertIds;
+		extVertIds.reserve( vertIds.size()+1 );
+		std::copy( vertIds.begin(), vertIds.end()		, std::back_inserter( extVertIds ) );
+		std::copy( vertIds.begin(), vertIds.begin() + 1	, std::back_inserter( extVertIds ) );
+
+		for ( std::vector<ch::vid_t>::const_iterator vit = extVertIds.begin(); vit != extVertIds.end()-1; ++vit )
+		{
+			ch::vid_t vertIndex = *vit;
+			bool vertExists = polyt.vertexExists( vertIndex );
+
+			CPPUNIT_ASSERT_EQUAL( true, vertExists );
+		}
+
+
+
+//		half_edge_t::const_iterator heit = half_edges.begin();
+//		for ( ; heit != half_edges.end(); ++heit )
+//		{
+//			cout << "he: (" << heit->id.first << " " << heit->id.second << ")";
+//			cout << " prev " << heit->prev.first << " " << heit->prev.second;
+//			cout << " next " << heit->next.first << " " << heit->next.second;
+//			cout << " incFace " << heit->incidentFace;
+//			cout << endl;
+//		}
+
+		half_edge_t::iterator res = half_edges.find( half_edge( pair<vid_t,vid_t>(10, 11) ) );
+		
+//		cout << "found: " << res->id.first << " " << res->id.second << endl;
+//		
+//		cout << "size: " << half_edges.size() << endl;
+
+
+
+
+
+
+			cout << "currentHe: " << currentHalfEdge.first << " " << currentHalfEdge.second << endl;
+
+			half_edge_t::const_iterator heIt2 = halfEdgeCollection.find( half_edge(pair<vid_t,vid_t>(3,5)) );
+			
+			cout << " 35he: (" << heIt2->id.first << " " << heIt2->id.second << ")" <<endl;
+			
+			half_edge_t::const_iterator heIt = halfEdgeCollection.find( half_edge(currentHalfEdge) );
+
+			cout << " he: (" << heIt->id.first << " " << heIt->id.second << ")" <<endl;
+
+			assert( heIt != halfEdgeCollection.end() );
+
+			currentHalfEdge = heIt->next;
+			firstHeLeft = true;
+
+
+
+
+		cout << " done current: " << currentHalfEdge.first << " " << currentHalfEdge.second;
+		cout << " firstHe: " << firstHalfEdge.first << " " << firstHalfEdge.second;
+		cout << " firstHeLeft " << firstHeLeft;
+		cout << endl;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		//	Check the vertex number
+		size_t vertNum		= polyt.vertexNumber();
+		size_t expVertNum	= 3;
+		CPPUNIT_ASSERT_EQUAL( expVertNum, vertNum );
+
+		//	Check vertices
+		for ( std::vector<ch::vid_t>::const_iterator vit = vertIds.begin(); vit != vertIds.end(); ++vit )
+		{
+			CPPUNIT_ASSERT_EQUAL( true, polyt.vertexExists( *vit ) );
+		}
+
+		//	Counter test
+		CPPUNIT_ASSERT_EQUAL( false, polyt.vertexExists( 10133 ) );
+
+
+		//	Check half edge number
+		size_t halfEdgeNum		= polyt.halfEdgeNumber();
+		size_t expHalfEdgeNum	= 3;
+		CPPUNIT_ASSERT_EQUAL( expHalfEdgeNum, halfEdgeNum );
+
+		//	Check half edges
+		std::vector<ch::vid_t> extVertIds;
+		extVertIds.reserve( vertIds.size()+1 );
+		std::copy( vertIds.begin(), vertIds.end()		, std::back_inserter( extVertIds ) );
+		std::copy( vertIds.begin(), vertIds.begin() + 1	, std::back_inserter( extVertIds ) );
+
+		for ( std::vector<ch::vid_t>::const_iterator vit = extVertIds.begin(); vit != extVertIds.end()-1; ++vit )
+		{
+			CPPUNIT_ASSERT_EQUAL( true, polyt.halfEdgeExists( *vit, *(vit+1) ) );
+		}
+
+		//	Counter test
+		CPPUNIT_ASSERT_EQUAL( false, polyt.halfEdgeExists( 5, 3 ) );
+
+
+		//	Check face number
+		size_t faceNum		= polyt.faceNumber();
+		size_t expFaceNum	= 1;
+		CPPUNIT_ASSERT_EQUAL( expFaceNum, faceNum );
+		
+		//	Check faces
+
+
+
+
+
+
+				cout << " he prev: " << currentHalfEdge.first << " " << currentHalfEdge.second << endl;
+				
+									cout << "   twin exists " << endl;
+									
+
+
+	void polytope::enumerateAllHe()
+	{
+		half_edge_t::const_iterator heit = half_edges.cbegin();
+
+		for ( ; heit != half_edges.cend(); ++heit )
+		{
+			cout << "he: " << heit->id.first << " " << heit->id.second << endl;
+		}
+	}
+
+		void enumerateAllHe();
+
+	cout << " he: " << it->current().first << " " << it->current().second << endl;
+	
+			polyt.enumerateAllHe();
+
+
+
+
+
+		for ( std::vector<ch::vid_t >::const_iterator noncvit = vIds.begin(); noncvit != vIds.end(); ++noncvit )
+		{
+			for ( ch::vertex_t::const_iterator cvit = vertices.begin(); cvit != vertices.end(); ++cvit )
+			{
+				bool equality = cvit->current() == *noncvit;
+				CPPUNIT_ASSERT_EQUAL( false, equality );
+			}
+		}
+		
+
+
+
+	void checkNonExistingVerticesIn( const ch::polytope& polyt, const std::vector<ch::vid_t >& vIds )
+	{
+		size_t vertNum = polyt.vertexNumber();
+		size_t expVertNum = 0;
+		CPPUNIT_ASSERT_EQUAL( expVertNum, vertNum );
+
+		size_t halfEdgeNum = polyt.halfEdgeNumber();
+		size_t expHalfEdgeNum = 0;
+		CPPUNIT_ASSERT_EQUAL( expHalfEdgeNum, halfEdgeNum );
+
+		size_t faceNum = polyt.faceNumber();
+		size_t expFaceNum = 0;
+		CPPUNIT_ASSERT_EQUAL( expFaceNum, faceNum );
+	}
+
+	//--------------------------------------------------------------------------
+
+
+
+	//		<------
+	//		|	  ^/^|^
+	//		| f1 //	|| \
+	//		|	//	||	\
+	//		|  //	||	 \
+	//		| //	||	  \
+	//		v/v		||	   \
+	//		|^\	 f3 || f4  ^
+	//		| \\	||	  /
+	//		|  \\	||	 /
+	//		|	\\	||  /
+	//		| f2 \\	|| /
+	//		v	  \v v/
+	//		------->
+	//
+
+
+
+
+			bool nextTwinExists = twinHalfEdgeExists( nextHeId, accHalfEdge );
+			if ( nextTwinExists  &&  accHalfEdge.incidentFace == fid2 )
+			{
+				heid_t twinHeId = accHalfEdge.id;
+				removeHalfEdge( twinHeId );
+
+				removeHalfEdge( currentHeId );
+				currentHeId = nextHeId;
+			}
+			else
+			{
+				getHalfEdge( currentHeId, accHalfEdge );
+				accHalfEdge.prev = 
+			}
+

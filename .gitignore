@@ -1,0 +1,10 @@
+
+*.o
+*.so
+*.a
+test/bin/test
+
+.cproject
+.project
+.settings
+
