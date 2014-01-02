@@ -1,27 +1,21 @@
-.PHONY:  all  alltest  clean  cleantest  test
-
+.PHONY:  all
 all:
 	$(MAKE) -C  src
 
+.PHONY:  alltest
 alltest:
 	$(MAKE) -C  test
 
+.PHONY:  clean
 clean:
 	$(MAKE) -C  src  clean
 
+.PHONY:  cleantest
 cleantest:
 	$(MAKE) -C  test  clean
 
 
-DIR_NAME = dcel
-ARCHIVE  = dcel
-
-DATE	=	$(shell date +"_%G%m%d_%H%M%S")
-
-
-zip:  clean  cleantest
-	@rm  -frv  ../$(ARCHIVE).zip
-	cd ..  &&  zip  -9 -r  $(ARCHIVE)$(DATE).zip  $(DIR_NAME)/
-
-unzip:
-	unzip  $(ARCHIVE).zip  -d .
+.PHONY:  test
+test:
+	$(MAKE) -C	src		test
+	$(MAKE) -C	test	test
