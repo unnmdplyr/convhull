@@ -15,7 +15,7 @@ endif
 ifdef RELEASE
 	CXXFLAGS	+= -O3
 else
-	CXXFLAGS	+= -O0 -g
+	CXXFLAGS	+= -O0 -g3
 endif
 
 
@@ -39,10 +39,37 @@ NOT_DIR_OBJS= $(patsubst %.cpp, %.o, $(SRC) )
 
 OBJS		= $(addprefix $(BUILD), $(NOT_DIR_OBJS) )
 
-TARGET_DIR = ../bin/
+DEPS		= $(subst .o,.d,$(OBJS))
+
+TARGET_DIR	= ../bin/
 
 
 #	Functions
+
+ifneq "$(MAKECMDGOALS)" "clean"
+	-include $(DEPS)
+endif
+
+#DEPEND.cpp = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)
+DEPEND.cpp = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)
+
+# $(call make-depend, source-file, object-file, depend-file)
+define make-depend
+	$(CYAN)
+	@printf "\tMake depend file...\t%s" "$3"
+	$(NORMAL)
+	@$(DEPEND.cpp)	-MM		\
+					-MP		\
+					-MF "$3"\
+					-MT "$2"\
+					$(INC)	\
+					$1
+	$(CYAN)
+	@printf "\t...done.\n"
+	$(NORMAL)
+endef
+#-MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+
 
 #OUTPUT_OPTION = -o $@
 #COMPILE.cpp = $(COMPILE.cc)
@@ -130,6 +157,6 @@ clean_pattern = .  ..  ../..
 
 clean:	clean_msg
 	$(RED)
-	@$(RM)  -rv  $(OBJS)  $(TARGET)  $(addsuffix /*~,$(clean_pattern))
+	@$(RM)  -rv  $(OBJS)  $(TARGET)  $(addsuffix /*~,$(clean_pattern))  $(DEPS)
 	$(NORMAL)
 

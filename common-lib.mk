@@ -12,6 +12,7 @@ TARGET =	$(TARGET_DIR)lib$(LAST_DIR).so
 all:	build_msg	$(TARGET)
 
 $(BUILD)%.o: %.cpp
+	$(call make-depend,$<,$@,$(subst .o,.d,$@))
 	$(call compile-src-to-lib,	$@, $<)
 
 $(TARGET):	$(OBJS)

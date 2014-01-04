@@ -17,4 +17,4 @@ test:
 	@printf "LDFLAGS: %s\n" $(LDFLAGS)
 	@printf "TARGET: %s\n" $(TARGET)
 	@printf "INC: %s\n" $(INC)
-
+	@printf "DEPS: %s\n" $(DEPS)

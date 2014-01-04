@@ -13,4 +13,4 @@ test:
 	@printf "LDFLAGS: %s\n" $(LDFLAGS)
 	@printf "TARGET: %s\n" $(TARGET)
 	@printf "dirname: %s\n" $(LAST_DIR)
-
+	@printf "DEPS: %s\n" $(DEPS)

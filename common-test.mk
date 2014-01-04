@@ -31,6 +31,7 @@ TARGET =	$(TARGET_DIR)$(LAST_DIR)test
 all:	build_msg	$(TARGET)
 
 $(BUILD)%.o: %.cpp
+	$(call make-depend,$<,$@,$(subst .o,.d,$@))
 	$(call compile-src-to-exec,	$@, $<)
 
 $(TARGET):	$(OBJS)
