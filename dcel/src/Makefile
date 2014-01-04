@@ -1,12 +1,9 @@
 
 
-#TARGET_DIR = ../bin/
-
-TARGET =	$(TARGET_DIR)lib$(LAST_DIR).so
+include ../../common-lib.mk
 
 
-include ../../common.mk
-
+.PHONY: test
 test:
 	@printf "CXX: %s\n" $(CXX)
 	@printf "obj: %s\n" $(OBJ)

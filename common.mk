@@ -39,41 +39,74 @@ NOT_DIR_OBJS= $(patsubst %.cpp, %.o, $(SRC) )
 
 OBJS		= $(addprefix $(BUILD), $(NOT_DIR_OBJS) )
 
-CURR_PWD	= "$(shell  cd ../; pwd)"
-LAST_DIR	= "$(shell basename $(CURR_PWD))"
-
 TARGET_DIR = ../bin/
 
-#TARGET =	$(TARGET_DIR)lib$(LAST_DIR).so
 
-
-#	Targets
-all:	build_msg	$(TARGET)
+#	Functions
 
 #OUTPUT_OPTION = -o $@
 #COMPILE.cpp = $(COMPILE.cc)
 #COMPILE.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 
-$(BUILD)%.o: %.cpp
+# $(call compile-src-to-lib, target, srcs)
+define compile-src-to-lib
 	$(BLUE)
-	@printf "Compiling...\t%s\n" $@
+	@printf "Compiling...\t%s\n" $1
 	$(NORMAL)
-	@$(COMPILE.cpp)  -fPIC  $(OUTPUT_OPTION)  $<
+	@$(COMPILE.cpp)  -fPIC  $(OUTPUT_OPTION)  $2
 	$(GREEN)
 	@printf "\t-> compiled\n"
 	$(NORMAL)
+endef
 
 #LINK.cpp = $(LINK.cc)
 #LINK.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
-$(TARGET):	$(OBJS)
+# $(call link-objs-to-lib, target, objects)
+define link-objs-to-lib
 	$(PURPLE)
-	@printf "Linking...\t%s\n" $@
+	@printf "Linking...\t%s\n" $1
 	$(NORMAL)
-	@$(LINK.cpp)  -shared  $(OUTPUT_OPTION)  $^
+	@$(LINK.cpp)  -shared  $(OUTPUT_OPTION)  $2
 	$(GREEN)
 	@printf "\t-> linked\n"
 	$(NORMAL)
+endef
+
+
+
+#OUTPUT_OPTION = -o $@
+#COMPILE.cpp = $(COMPILE.cc)
+#COMPILE.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+
+# $(call compile-src-to-exec, target, srcs)
+define compile-src-to-exec
+	$(BLUE)
+	@printf "Compiling...\t%s\n" $1
+	$(NORMAL)
+	@$(COMPILE.cpp)  $(INC)  -c  $(OUTPUT_OPTION)  $2
+	$(GREEN)
+	@printf "\t-> compiled\n"
+	$(NORMAL)
+endef
+
+#LINK.cpp = $(LINK.cc)
+#LINK.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+
+# $(call link-objs-to-exec, target, objects)
+define link-objs-to-exec
+	$(PURPLE)
+	@printf "Linking...\t%s\n" $1
+	$(NORMAL)
+	@$(LINK.cpp)  $(LDLIBS)  $(OUTPUT_OPTION)  $2
+	$(GREEN)
+	@printf "\t-> linked\n"
+	$(NORMAL)
+endef
+
+
+#	Targets
+all:
 
 
 .PHONY: build_msg

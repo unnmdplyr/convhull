@@ -1,5 +1,4 @@
 
-
 include ../../../common.mk
 
 
@@ -25,40 +24,17 @@ LDLIBS		= $(addprefix -l,$(LIBS))
 CURR_PWD	= "$(shell  cd ../../; pwd)"
 LAST_DIR	= "$(shell basename $(CURR_PWD))"
 
-#TARGET_DIR = ../bin/
-
 TARGET =	$(TARGET_DIR)$(LAST_DIR)test
 
 
 #	Targets
-all:	$(TARGET)
-
-
-#OUTPUT_OPTION = -o $@
-#COMPILE.cpp = $(COMPILE.cc)
-#COMPILE.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+all:	build_msg	$(TARGET)
 
 $(BUILD)%.o: %.cpp
-	$(BLUE)
-	@printf "Compiling...\t%s\n" $@
-	$(NORMAL)
-	@$(COMPILE.cpp)  $(INC)  -c  $(OUTPUT_OPTION)  $<
-	$(GREEN)
-	@printf "\t-> compiled\n"
-	$(NORMAL)
-
-
-#LINK.cpp = $(LINK.cc)
-#LINK.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+	$(call compile-src-to-exec,	$@, $<)
 
 $(TARGET):	$(OBJS)
-	$(PURPLE)
-	@printf "Linking...\t%s\n" $@
-	$(NORMAL)
-	@$(LINK.cpp)  $(LDLIBS)  $(OUTPUT_OPTION)  $^
-	$(GREEN)
-	@printf "\t-> linked\n"
-	$(NORMAL)
+	$(call link-objs-to-exec,	$@, $^)
 
 
 
