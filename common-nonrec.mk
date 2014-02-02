@@ -44,14 +44,19 @@ build-dir := build-$(shell uname -i)
 #	E.g.	build-x86_64/dh  build-x86_64/dcel
 build-dirs := $(addprefix $(build-dir)/,$(module-names))
 
-unused-var0 := $(shell mkdir -p $(build-dir) )
-unused-var1 := $(shell mkdir -p $(build-dirs);	\
-					mkdir -p $(addsuffix /$(binary-dir),$(build-dirs));	\
-					mkdir -p $(addsuffix /$(linked-dir),$(build-dirs)))
-
 #	$(call module-binary-dir, module-name)
 module-binary-dir = $(addsuffix /$(binary-dir),					\
 						$(addprefix $(build-dir)/,$1))
+
+#	$(call module-binary-dir, module-name)
+module-linked-dir = $(addsuffix /$(linked-dir),					\
+						$(addprefix $(build-dir)/,$1))
+
+#	Creating the build related directories
+unused-var0 := $(shell mkdir -p $(build-dir) )
+unused-var1 := $(shell mkdir -p $(build-dirs);					\
+					mkdir -p $(foreach mod,$(module-names),$(call module-binary-dir,$(mod)));	\
+					mkdir -p $(foreach mod,$(module-names),$(call module-linked-dir,$(mod))))
 
 # $(call source-to-object, source-file-list)
 source-to-object =	$(addprefix $(build-dir)/,					\
