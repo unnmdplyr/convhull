@@ -240,6 +240,26 @@ define link-test-objects-to-executable
 	$(NORMAL)
 endef
 
+#	$(call add-compilation-flags)
+define add-compilation-flags
+	CXXFLAGS +=	-Wno-global-constructors	\
+				-Wno-exit-time-destructors
+endef
+
+#	$(call subtract-compilation-flags)
+define subtract-compilation-flags
+	CXXFLAGS = $(filter-out -Wno-global-constructors -Wno-exit-time-destructors,$(CXXFLAGS))
+endef
+
+#	$(call preset-compilation-flags)
+define preset-compilation-flags
+	$(if $(filter-out "clang++","$(CXX)"),,$(eval $(call add-compilation-flags)))
+endef
+
+#	$(call reset-compilation-flags)
+define reset-compilation-flags
+	$(if $(filter-out "clang++","$(CXX)"),,$(eval $(call subtract-compilation-flags)))
+endef
 
 #-------------------------------------------------------------------------------
 #	Targets
@@ -248,19 +268,21 @@ endef
 programs :=
 libraries :=
 
-#	$(call module-targets, module-name)
-define module-targets
+#	$(call module-inclusion, module-name)
+define module-inclusion
 	include $(addsuffix /module.mk,$1)
+endef
 
-	libraries += $$($1-lib)
-	programs  += $$($1-test-exe)
+define module-target-retrieval
+	libraries += $1-build-message  $$($1-lib)
+	programs  += $(subst /,-,$(call module-test-directory,$1))-build-message  $$($1-test-exe)
 endef
 
 .PHONY: all
 all:
 
 $(eval $(foreach mod,$(module-names),							\
-	$(eval $(call module-targets,$(mod)))))
+	$(eval $(call module-inclusion,$(mod)))))
 
 $(eval $(foreach mod,$(module-names),							\
 	$(eval $(call $(mod)-target-with-prerequisites))))
@@ -268,37 +290,44 @@ $(eval $(foreach mod,$(module-names),							\
 $(eval $(foreach mod,$(module-names),							\
 	$(eval $(call $(mod)-test-target-with-prerequisites))))
 
+$(eval $(foreach mod,$(module-names),							\
+	$(eval $(call module-target-retrieval,$(mod)))))
 
 .PHONY: all
-all:  build_msg  $(libraries)  build_msg  $(programs)
+all: $(libraries)  $(programs)
 
 .PHONY: tests
 tests:  $(libraries)
-	@printf "libraries: %s \n" $(libraries)
+#	@printf "libraries: %s \n" $(libraries)
 
 
-.PHONY: build_msg
-build_msg:
+#	$(call build-message, print-out)
+define build-message
 	$(GREEN)
-	@printf "\nBuilding...\t%s\n"	$(current-target)
+	@printf "\nBuilding...\t%s\n"	$1
 	$(NORMAL)
 	@printf "\twith flags: %s\n" "$(CXXFLAGS)"
+endef
 
-
-.PHONY: clean_msg
-clean_msg:
+.PHONY: clean-message
+clean-message:
 	$(GREEN)
 	@printf "\nCleaning... $(build-dir)\n"
 	$(NORMAL)
 
 #RM = rm -f
 
-clean: clean_msg
+clean: clean-message
 	$(RED)
 	$Q$(RM) -rv  $(build-dir)
 	$(NORMAL)
 
+
 .PHONY: test
-test:
-	@printf "%s \n" 	$(dcel-sources)
-	@printf "%s \n" 	$(dcel-lib)
+test:	dcel-build-message
+	@printf "src: %s \n" 	$(dcel-sources)
+	@printf "lib: %s \n" 	$(dcel-lib)
+
+
+
+
