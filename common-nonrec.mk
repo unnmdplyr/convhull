@@ -10,7 +10,7 @@ CYAN   := @printf '\033[0;36m'
 
 #	Modify these variables according to the wishes
 CXX := clang++
-#RELEASE :=
+RELEASE :=
 
 CXXFLAGS	+=	-fmessage-length=0
 
@@ -26,6 +26,8 @@ else
 	CXXFLAGS	+= -O0 -g3
 endif
 
+#	Quiet or verbose
+Q = @
 
 #-------------------------------------------------------------------------------
 #	Library part
@@ -43,7 +45,12 @@ module-dirs := $(subst /module.mk,,$(shell find $$1 -name "module.mk"))
 module-names := $(notdir $(module-dirs))
 
 #	E.g.	build-x86_64
-build-dir := build-$(shell uname -i)
+build-dir-pre := build-$(shell uname -i)
+ifdef RELEASE
+	build-dir = $(addsuffix -release,$(build-dir-pre))
+else
+	build-dir = $(addsuffix -debug,$(build-dir-pre))
+endif
 
 #	E.g.	build-x86_64/dh  build-x86_64/dcel
 build-dirs := $(addprefix $(build-dir)/,$(module-names))
@@ -56,11 +63,16 @@ module-binary-dir = $(addsuffix /$(binary-dir),					\
 module-linked-dir = $(addsuffix /$(linked-dir),					\
 						$(addprefix $(build-dir)/,$1))
 
-#	Creating the build related directories
-unused-var0 := $(shell mkdir -p $(build-dir) )
-unused-var1 := $(shell mkdir -p $(build-dirs);					\
-					mkdir -p $(foreach mod,$(module-names),$(call module-binary-dir,$(mod)));	\
-					mkdir -p $(foreach mod,$(module-names),$(call module-linked-dir,$(mod))))
+ifneq "$(MAKECMDGOALS)" "clean"
+
+	#	Creating the build related directories
+	unused-var0 := $(shell  mkdir -p $(build-dir))
+	unused-var1 := $(shell  mkdir -p $(build-dirs);					\
+							mkdir -p $(foreach mod,$(module-names),	\
+												$(call module-binary-dir,$(mod)));	\
+							mkdir -p $(foreach mod,$(module-names),	\
+												$(call module-linked-dir,$(mod))))
+endif
 
 # $(call source-to-object, source-file-list)
 source-to-object =	$(addprefix $(build-dir)/,					\
@@ -103,7 +115,7 @@ define make-depend
 	$(CYAN)
 	@printf "\tMake depend file...\t%s" "$3"
 	$(NORMAL)
-	@$(DEPEND.cpp)	-MM		\
+	$Q$(DEPEND.cpp)	-MM		\
 					-MP		\
 					-MF "$3"\
 					-MT "$2"\
@@ -125,7 +137,7 @@ define compile-sources-to-objects
 	$(BLUE)
 	@printf "Compiling...\t%s\n" $1
 	$(NORMAL)
-	@$(COMPILE.cpp)  -fPIC  -o $1  $2
+	$Q$(COMPILE.cpp)  -fPIC  -o $1  $2
 	$(GREEN)
 	@printf "\t-> compiled\n"
 	$(NORMAL)
@@ -140,7 +152,7 @@ define link-objects-to-library
 	$(PURPLE)
 	@printf "Linking...\t%s\n" $1
 	$(NORMAL)
-	@$(LINK.cpp)  -shared  -o $1  $2
+	$Q$(LINK.cpp)  -shared  -o $1  $2
 	$(GREEN)
 	@printf "\t-> linked\n"
 	$(NORMAL)
@@ -165,12 +177,15 @@ module-test-linked-dir = $(addsuffix /$(test-dir)/$(linked-dir),		\
 #	E.g.	build-x86_64/dh/test  build-x86_64/dcel/test
 test-dirs := $(addsuffix /$(test-dir),$(build-dirs))
 
-#	Creating the build related directories
-unused-var2 := $(shell mkdir -p $(test-dirs) )
-unused-var3 := $(shell	mkdir -p $(foreach mod,$(module-names),			\
-											$(call module-test-binary-dir,$(mod)));	\
-						mkdir -p $(foreach mod,$(module-names),			\
-											$(call module-test-linked-dir,$(mod))))
+ifneq "$(MAKECMDGOALS)" "clean"
+
+	#	Creating the build related directories
+	unused-var2 := $(shell  mkdir -p $(test-dirs))
+	unused-var3 := $(shell	mkdir -p $(foreach mod,$(module-names),			\
+												$(call module-test-binary-dir,$(mod)));	\
+							mkdir -p $(foreach mod,$(module-names),			\
+												$(call module-test-linked-dir,$(mod))))
+endif
 
 #	$(call module-test-directory, module-name)
 module-test-directory = $(addsuffix /$(test-dir),$1)
@@ -205,7 +220,7 @@ define compile-sources-to-test-objects
 	$(BLUE)
 	@printf "Compiling...\t%s\n" $1
 	$(NORMAL)
-	@$(COMPILE.cpp)  $(addprefix -I,$3)  -c  -o $1  $2
+	$Q$(COMPILE.cpp)  $(addprefix -I,$3)  -o $1  $2
 	$(GREEN)
 	@printf "\t-> compiled\n"
 	$(NORMAL)
@@ -219,7 +234,7 @@ define link-test-objects-to-executable
 	$(PURPLE)
 	@printf "Linking...\t%s\n" $1
 	$(NORMAL)
-	@$(LINK.cpp)  $(addprefix -l,$3)  -o $1  $2
+	$Q$(LINK.cpp)  $(addprefix -l,$3)  -o $1  $2
 	$(GREEN)
 	@printf "\t-> linked\n"
 	$(NORMAL)
@@ -253,74 +268,37 @@ $(eval $(foreach mod,$(module-names),							\
 $(eval $(foreach mod,$(module-names),							\
 	$(eval $(call $(mod)-test-target-with-prerequisites))))
 
-.PHONY: preparation
-preparation:
-#	@printf "%s \n" $(dcel-lib)
-#	$(eval $(call module-targets,dcel))
-	@printf "dir: %s \n" $(dcel-dir)
-	@printf "src: %s \n" $(dcel-src)
-	@printf "inc: %s \n" $(dcel-inc)
-	@printf "obj: %s \n" $(dcel-obj)
-	@printf "lib: %s \n" $(dcel-lib)
-	@printf "mod: %s \n" $(module-names)
-	@printf "libraries: %s \n" $(libraries)
-	@printf "modbindir: %s \n" $(call module-binary-dir,dcel)
-	@printf "\n"
-	@printf "test-dirs: %s \n" $(test-dirs)
-	@printf "test-dir: %s \n" $(dcel-test-dir)
-	@printf "test-src: %s \n" $(dcel-test-src)
-	@printf "test-inc: %s \n" $(dcel-test-inc)
-	@printf "test-obj: %s \n" $(dcel-test-obj)
-	@printf "test-exe: %s \n" $(dcel-test-exe)
 
 .PHONY: all
-all: preparation $(libraries) $(programs)
+all:  build_msg  $(libraries)  build_msg  $(programs)
 
-.PHONY: libraries
-libraries: preparation  $(libraries)
+.PHONY: tests
+tests:  $(libraries)
 	@printf "libraries: %s \n" $(libraries)
 
 
+.PHONY: build_msg
+build_msg:
+	$(GREEN)
+	@printf "\nBuilding...\t%s\n"	$(current-target)
+	$(NORMAL)
+	@printf "\twith flags: %s\n" "$(CXXFLAGS)"
+
+
+.PHONY: clean_msg
+clean_msg:
+	$(GREEN)
+	@printf "\nCleaning... $(build-dir)\n"
+	$(NORMAL)
 
 #RM = rm -f
 
-clean:
-	$(RM) -rv  $(build-dir)
+clean: clean_msg
+	$(RED)
+	$Q$(RM) -rv  $(build-dir)
+	$(NORMAL)
 
 .PHONY: test
 test:
 	@printf "%s \n" 	$(dcel-sources)
 	@printf "%s \n" 	$(dcel-lib)
-#@printf "module-dirs: %s\n" $(call module-dirs, .)
-#@printf "%s\n" $(build-dir)
-#@printf "%s\n" $(build-dirs)
-#@printf "module names: %s\n" $(module-names)
-#	$(eval $(call assemble-module-sources,dcel))
-#@printf "src: %s\n" $(dcel-source)
-#@printf "inc: %s\n" $(dcel-includes)
-#@printf "obj: %s %s\n" $(call source-to-object,$(dcel-source))
-#	$(eval $(call assemble-module-objects,dcel))
-#	@printf "obj3: %s\n" $(dcel-objects)
-#	$(eval $(call module-targets,dcel))
-#	$(dcel-lib)
-
-
-
-#	$(call module-target-prerequisites, module-name)
-#define module-target-prerequisites
-#$(warning ramper $$($1-lib))
-#$($1-lib): $($1-obj)
-#	$(eval $(call link-objects-to-library,$@,$^))
-#endef
-
-#$(eval $(foreach mod,$(module-names),				\
-#	$(eval $(call module-targets,$(mod)))))
-
-#$(eval $(call module-target-prerequisites,dcel))
-
-#$(eval $(foreach mod,$(module-names),				\
-#	$(eval $(call module-target-prerequisites,$(mod)))))
-
-#$(foreach mod,$(module-names),			\
-#	$(eval $(call module-target-prerequisites,$(mod))))
-
