@@ -273,9 +273,18 @@ define module-inclusion
 	include $(addsuffix /module.mk,$1)
 endef
 
+#	$(call module-target-retrieval, module-name)
 define module-target-retrieval
 	libraries += $1-build-message  $$($1-lib)
-	programs  += $(subst /,-,$(call module-test-directory,$1))-build-message  $$($1-test-exe)
+	programs  += $(subst /,-,$($1-test-dir))-build-message  $$($1-test-exe)
+endef
+
+#	$(call build-message, print-out)
+define build-message
+	$(GREEN)
+	@printf "\nBuilding...\t%s\n"	$1
+	$(NORMAL)
+	@printf "\twith flags: %s\n" "$(CXXFLAGS)"
 endef
 
 .PHONY: all
@@ -297,17 +306,9 @@ $(eval $(foreach mod,$(module-names),							\
 all: $(libraries)  $(programs)
 
 .PHONY: tests
-tests:  $(libraries)
-#	@printf "libraries: %s \n" $(libraries)
-
-
-#	$(call build-message, print-out)
-define build-message
-	$(GREEN)
-	@printf "\nBuilding...\t%s\n"	$1
-	$(NORMAL)
-	@printf "\twith flags: %s\n" "$(CXXFLAGS)"
-endef
+tests:  $(programs)
+	$(foreach mod,$(module-names),							\
+					$(addprefix ./,$($(mod)-test-exe)))
 
 .PHONY: clean-message
 clean-message:
@@ -324,7 +325,7 @@ clean: clean-message
 
 
 .PHONY: test
-test:	dcel-build-message
+test:
 	@printf "src: %s \n" 	$(dcel-sources)
 	@printf "lib: %s \n" 	$(dcel-lib)
 
