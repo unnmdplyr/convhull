@@ -14,9 +14,15 @@ $(current-dir)-lib = $(call module-library,$($(current-dir)-dir))
 #	E.g. dcel-target-with-prerequisites
 define $(current-dir)-target-with-prerequisites
 
+#	E.g. dcel-build-message
 .PHONY: $(current-dir)-build-message
 $(current-dir)-build-message:
 	$(call build-message, $($(current-dir)-lib))
+
+#	E.g. dcel-post-build-message
+.PHONY: $(current-dir)-post-build-message
+$(current-dir)-post-build-message:
+	$(call post-build-message)
 
 #	E.g. build-x86_64/dcel/obj/%.o: dcel/src/%.cpp
 $(call module-objects-target, $(current-dir)): $(call module-objects-prerequisites, $(current-dir))
@@ -26,6 +32,15 @@ $(call module-objects-target, $(current-dir)): $(call module-objects-prerequisit
 #	E.g. build-x86_64/dcel/bin/libdcel.so: build-x86_64/dcel/obj/*.o
 $($(current-dir)-lib): $($(current-dir)-obj)
 	$(call link-objects-to-library,$$@,$$^)
+
+#	\brief	This is public target.
+#	E.g. build-x86_64/dcel/bin/libdcel.so-target:	dcel-build-message					\
+#													build-x86_64/dcel/bin/libdcel.so	\
+#													dcel-post-build-message
+.PHONY: $($(current-dir)-lib)-target
+$($(current-dir)-lib)-target:	$(current-dir)-build-message		\
+								$($(current-dir)-lib)				\
+								$(current-dir)-post-build-message
 endef
 
 
@@ -62,9 +77,15 @@ endef
 #	E.g. dcel-test-target-with-prerequisites
 define $(subst /,-,$($(current-dir)-test-dir))-target-with-prerequisites
 
+#	E.g. dcel-test-build-message
 .PHONY: $(subst /,-,$($(current-dir)-test-dir))-build-message
 $(subst /,-,$($(current-dir)-test-dir))-build-message:
 	$(call build-message, $($(current-dir)-test-exe))
+
+#	E.g. dcel-test-post-build-message
+.PHONY: $(subst /,-,$($(current-dir)-test-dir))-post-build-message
+$(subst /,-,$($(current-dir)-test-dir))-post-build-message:
+	$(call post-build-message)
 
 #	E.g. build-x86_64/dcel/test/obj/%.o: dcel/test/src/%.cpp
 $(call module-test-objects-target,$($(current-dir)-test-dir)): $(call module-test-objects-prerequisites,$($(current-dir)-test-dir))
@@ -73,11 +94,22 @@ $(call module-test-objects-target,$($(current-dir)-test-dir)): $(call module-tes
 	$(call compile-sources-to-test-objects,$$@,$$<,$($(current-dir)-inc))
 	$(eval $(call  reset-compilation-flags))
 
-#	E.g. build-x86_64/dcel/test/bin/dceltest:  build-x86_64/dcel/bin/libdcel.so  build-x86_64/dcel/test/obj/*.o
-$($(current-dir)-test-exe): $($(current-dir)-lib) $($(current-dir)-test-obj)
+#	E.g. build-x86_64/dcel/test/bin/dceltest: build-x86_64/dcel/test/obj/*.o
+$($(current-dir)-test-exe): $($(current-dir)-test-obj)
 	$(eval $(call preset-link-flags))
-	$(call link-test-objects-to-executable,$$@,$$(wordlist 2,$$(words $$^),$$^),$(libraries-to-link))
+	$(call link-test-objects-to-executable,$$@,$$^,$(libraries-to-link))
 	$(eval $(call  reset-link-flags))
+
+#	\brief	This is public target.
+#	E.g. build-x86_64/dcel/test/bin/dceltest-target:	build-x86_64/dcel/bin/libdcel.so-target	\
+#														dcel-test-build-message					\
+#														build-x86_64/dcel/test/bin/dceltest		\
+#														dcel-test-post-build-message			\
+.PHONY: $($(current-dir)-test-exe)-target
+$($(current-dir)-test-exe)-target:	$($(current-dir)-lib)-target								\
+									$(subst /,-,$($(current-dir)-test-dir))-build-message		\
+									$($(current-dir)-test-exe)									\
+									$(subst /,-,$($(current-dir)-test-dir))-post-build-message
 endef
 
 

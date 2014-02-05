@@ -275,16 +275,25 @@ endef
 
 #	$(call module-target-retrieval, module-name)
 define module-target-retrieval
-	libraries += $1-build-message  $$($1-lib)
-	programs  += $(subst /,-,$($1-test-dir))-build-message  $$($1-test-exe)
+	libraries += $$($1-lib)-target
+	programs  += $$($1-test-exe)-target
 endef
 
 #	$(call build-message, print-out)
 define build-message
 	$(GREEN)
-	@printf "\nBuilding...\t%s\n"	$1
+	@printf "\nBuilding..."
+	$(RED)
+	@printf "\t%s\n"	$1
 	$(NORMAL)
 	@printf "\twith flags: %s\n" "$(CXXFLAGS)"
+endef
+
+#	$(call post-build-message)
+define post-build-message
+	$(GREEN)
+	@printf "Build is done.\n"
+	$(NORMAL)
 endef
 
 .PHONY: all
@@ -303,12 +312,12 @@ $(eval $(foreach mod,$(module-names),							\
 	$(eval $(call module-target-retrieval,$(mod)))))
 
 .PHONY: all
-all: $(libraries)  $(programs)
+all:  $(libraries)  $(programs)
 
-.PHONY: tests
-tests:  $(programs)
+.PHONY: run-tests
+run-tests: $(programs)
 	$(foreach mod,$(module-names),							\
-					$(addprefix ./,$($(mod)-test-exe)))
+					@$(addprefix ./,$($(mod)-test-exe)) ||:)
 
 .PHONY: clean-message
 clean-message:
