@@ -501,7 +501,7 @@ namespace chtest
 		addFaceTo( polyt, 2, 1, 3 );
 		addFaceTo( polyt, 2, 3, 4 );
 
-		mergeFaces( polyt, 1, 2, false );
+		mergeFaces( polyt, 1, 3, false );
 	}
 
 	//--------------------------------------------------------------------------

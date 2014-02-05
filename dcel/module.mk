@@ -3,7 +3,8 @@
 #	Library part
 #-------------------------------------------------------------------------------
 
-current-dir := dcel
+current-makefile := $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+current-dir := $(subst /,,$(dir $(current-makefile)))
 
 $(current-dir)-dir = $(call module-directory,$(current-dir))
 $(current-dir)-src = $(call module-sources,$($(current-dir)-dir))
@@ -65,6 +66,7 @@ define preset-link-flags
 	LDFLAGS =	$(addprefix -L,$(dirs-of-libraries-to-link))	\
 				$(addprefix $(WL_PATH_PF),$(dirs-of-libraries-to-link))
 
+	#	libcppuint-1.12-1 and libcppuint-dev packages needed
 	libraries-to-link = cppunit  $(current-dir)
 endef
 

@@ -1,8 +1,6 @@
 
-*.o
-*.so
-*.a
-test/bin/test
+build-x86_64-debug
+build-x86_64-release
 
 .cproject
 .project
