@@ -31,6 +31,11 @@ namespace chtest
 
 		CPPUNIT_TEST( testMergeFacesNonAdjacent						);
 		CPPUNIT_TEST( testMergeFacesAdjacent						);
+		CPPUNIT_TEST( testMergeFacesAdjacentBeginningWithPrecedingEdge			);
+		CPPUNIT_TEST( testMergeFacesAdjacentBeginningWithFirstCommonEdge		);
+		CPPUNIT_TEST( testMergeFacesAdjacentBeginningWithMidCommonEdge			);
+		CPPUNIT_TEST( testMergeFacesAdjacentBeginningWithLastCommonEdge			);
+		CPPUNIT_TEST( testMergeFacesAdjacentBeginningWithLastCommonFollowedEdge	);
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -57,6 +62,11 @@ namespace chtest
 
 		void testMergeFacesNonAdjacent();
 		void testMergeFacesAdjacent();
+		void testMergeFacesAdjacentBeginningWithPrecedingEdge();
+		void testMergeFacesAdjacentBeginningWithFirstCommonEdge();
+		void testMergeFacesAdjacentBeginningWithMidCommonEdge();
+		void testMergeFacesAdjacentBeginningWithLastCommonEdge();
+		void testMergeFacesAdjacentBeginningWithLastCommonFollowedEdge();
 	};
 
 }

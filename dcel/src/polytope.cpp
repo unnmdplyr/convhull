@@ -135,9 +135,6 @@ namespace ch
 		heid_t firstAdjacentEdge;
 		if ( !areFacesAdjacent( fid1, fid2, firstAdjacentEdge ) )	return false;
 
-		cout << "\nafter areFacesAdjacent firstAdjacentEdge: "<< firstAdjacentEdge.first << "," <<
-																	firstAdjacentEdge.second << "\n" << endl;
-
 		//	Save the previous edges
 		getHalfEdge( firstAdjacentEdge, accHalfEdge );
 		heid_t backwPrevHeId = accHalfEdge.prev;
@@ -145,8 +142,6 @@ namespace ch
 		bool twinExists = twinHalfEdgeExists( firstAdjacentEdge, accHalfEdge );
 		assert( twinExists  &&  CH_ASSERTSTR_INVALID_TWINHALFEDGEID );
 		heid_t backwNextTwinHeId = accHalfEdge.next;
-
-		cout << "\nafter saving previous edges\n" << endl;
 
 		//	The forward iteration
 		for ( heid_t currentHeId = firstAdjacentEdge
@@ -184,20 +179,9 @@ namespace ch
 			{
 				replaceHalfEdgeNext( prevTwinHeId, nextHeId		);
 				replaceHalfEdgePrev( nextHeId	 , prevTwinHeId	);
-				cout << "\nend of forward iteration prevTwinHeId: "<< prevTwinHeId.first << ","
-																	<< prevTwinHeId.second << "\n" << endl;
-				
-				getHalfEdge( nextHeId, accHalfEdge );
-				cout << "nextHeId: " << nextHeId.first<< ", " << nextHeId.second
-					<< "    prev: " << accHalfEdge.prev.first << ", " << accHalfEdge.prev.second
-					<< endl;
-				
-//				getHalfEdge( 
 				break;
 			}
 		}
-
-		cout << "\nafter forward iteration\n" << endl;
 
 		heid_t firstIn2ndFaceIt;
 
@@ -235,12 +219,9 @@ namespace ch
 			}
 		}
 
-		cout << "\nafter backward iteration\n" << endl;
-
 		//	Write over the face ids in the half edges which belonged to the 2nd face.
 		for ( heid_t currentHeId = firstIn2ndFaceIt; ; )
 		{
-			cout << "\n currHeId: " << currentHeId.first << ", " << currentHeId.second << endl;
 			getHalfEdge( currentHeId, accHalfEdge );
 			if ( accHalfEdge.incidentFace == fid2 )
 			{
@@ -254,8 +235,6 @@ namespace ch
 			}
 		}
 
-		cout << "\nafter face id overwrite\n" << endl;
-
 		//	Remove the id of the 2nd face from the face collection.
 		faces.erase( (accFace.id = fid2, accFace) );
 		assert( faces.find( accFace ) == faces.end() );
@@ -266,22 +245,8 @@ namespace ch
 
 		if ( !halfEdgeExists( fit->outerComponent ) )
 		{
-			cout << "\nthe face outerComponent edge doesn't exist " << fit->outerComponent.first
-						<< ", " << fit->outerComponent.second << endl;
-
 			faces.erase( fit );
-			faces.insert( /*fit,*/ (accFace.outerComponent = firstIn2ndFaceIt, accFace) );
-		}
-		else
-			cout << "\nthe face outerComponent edge exist " << fit->outerComponent.first << ", "
-						<< fit->outerComponent.second << "\n" << endl;
-
-		std::unique_ptr< ch::iterator<ch::heid_t> > it = createHalfEdgeIterator( 1 );
-
-		for ( it->first(); !it->done(); it->next() )
-		{
-			getHalfEdge( it->current(), accHalfEdge );
-			cout << "incidentFaceId: " << accHalfEdge.incidentFace << endl;
+			faces.insert( (accFace.outerComponent = firstIn2ndFaceIt, accFace) );
 		}
 
 		return true;

@@ -504,12 +504,7 @@ namespace chtest
 		mergeFaces( polyt, 1, 3, false );
 
 		//	Checking that the faces still exist
-		std::vector<ch::fid_t> faceIds;
-		faceIds.reserve(4);
-		faceIds.push_back( 1 );
-		faceIds.push_back( 2 );
-		faceIds.push_back( 3 );
-
+		std::vector<ch::fid_t> faceIds = { 1, 2, 3 };
 		checkFacesIn( polyt, faceIds );
 	}
 
@@ -534,55 +529,183 @@ namespace chtest
 
 		mergeFaces( polyt, 1, 2 );
 
-		//	Checking the nonexisting face
-		std::vector<ch::fid_t> faceIds;
-		faceIds.push_back( 2 );
+		std::vector<ch::vid_t> vertexCollection = { 1, 3, 2, 0 };
+		checkMergedFace( polyt, vertexCollection );
+	}
 
-		checkNonExistingFacesIn( polyt, faceIds );
+	//--------------------------------------------------------------------------
 
-		//	Go around the face and check whether all the vertices are correct
-		std::vector<ch::vid_t> vertIds;
-		vertIds.reserve(4);
-		vertIds.push_back( 1 );
-		vertIds.push_back( 3 );
-		vertIds.push_back( 2 );
-		vertIds.push_back( 0 );
+	//			0  <---------------------------------------	 6
+	//			 /										   ^
+	//			/	f1										\
+	//		   /											 \
+	//		  /												  \
+	//		 /												   \
+	//		v			2				3			4			\
+	//	  1 ----------->  ----------->  ----------->  -----------> 5
+	//		<-----------  <-----------  <-----------  <-----------
+	//		\													 ^
+	//		 \	f2												/
+	//		  \												   /
+	//		   \											  /
+	//			\											 /
+	//			 v											/
+	//			7  --------------------------------------->	 8
+	//
+	void polytopeTest::testMergeFacesAdjacentBeginningWithPrecedingEdge()
+	{
+		ch::polytope polyt;
 
-		{
-		//	Check the vertex IDs in the face
-		std::unique_ptr< ch::iterator<ch::vid_t> > it = polyt.createVertexIterator( 1 );
-		std::vector<ch::vid_t>::const_iterator vit = vertIds.begin();
+		std::vector<ch::vid_t> vertexCollection = { 0, 1, 2, 3, 4, 5, 6 };
+		polyt.addFace( vertexCollection );
 
-		for ( it->first(); !it->done(); it->next(), ++vit )
-		{
-			ch::vid_t expVertexId = *vit;
+		vertexCollection = { 7, 8, 5, 4, 3, 2, 1 };
+		polyt.addFace( vertexCollection );
 
-			CPPUNIT_ASSERT_EQUAL( expVertexId, it->current() );
-		}
+		mergeFaces( polyt, 1, 2 );
 
-		CPPUNIT_ASSERT_EQUAL( *vit, *(vertIds.end()) );
-		}
+		vertexCollection = { 0, 1, 7, 8, 5, 6 };
+		checkMergedFace( polyt, vertexCollection );
+	}
 
-		{
-		//	Create extended vector
-		std::vector<ch::vid_t> extVertIds;
-		extVertIds.reserve( vertIds.size()+1 );
-		std::copy( vertIds.begin(), vertIds.end()		, std::back_inserter( extVertIds ) );
-		std::copy( vertIds.begin(), vertIds.begin() + 1	, std::back_inserter( extVertIds ) );
+	//--------------------------------------------------------------------------
 
-		std::vector<ch::vid_t>::const_iterator vit = extVertIds.begin();
+	//			0  <---------------------------------------	 6
+	//			 /										   ^
+	//			/	f1										\
+	//		   /											 \
+	//		  /												  \
+	//		 /												   \
+	//		v			2				3			4			\
+	//	  1 ----------->  ----------->  ----------->  -----------> 5
+	//		<-----------  <-----------  <-----------  <-----------
+	//		\													 ^
+	//		 \	f2												/
+	//		  \												   /
+	//		   \											  /
+	//			\											 /
+	//			 v											/
+	//			7  --------------------------------------->	 8
+	//
+	void polytopeTest::testMergeFacesAdjacentBeginningWithFirstCommonEdge()
+	{
+		ch::polytope polyt;
 
-		//	Check the half edge IDs in the face
-		std::unique_ptr< ch::iterator<ch::heid_t> > it = polyt.createHalfEdgeIterator( 1 );
+		std::vector<ch::vid_t> vertexCollection = { 1, 2, 3, 4, 5, 6, 0 };
+		polyt.addFace( vertexCollection );
 
-		for ( it->first(); !it->done(); it->next(), ++vit )
-		{
-			ch::heid_t expHalfEdgeId = std::pair<ch::vid_t,ch::vid_t>( *vit, *(vit+1) );
+		vertexCollection = { 1, 7, 8, 5, 4, 3, 2 };
+		polyt.addFace( vertexCollection );
 
-			CPPUNIT_ASSERT_EQUAL( expHalfEdgeId.first , it->current().first  );
-			CPPUNIT_ASSERT_EQUAL( expHalfEdgeId.second, it->current().second );
-		}
-		}
+		mergeFaces( polyt, 1, 2 );
+
+		vertexCollection = { 1, 7, 8, 5, 6, 0 };
+		checkMergedFace( polyt, vertexCollection );
+	}
+
+	//--------------------------------------------------------------------------
+
+	//			0  <---------------------------------------	 6
+	//			 /										   ^
+	//			/	f1										\
+	//		   /											 \
+	//		  /												  \
+	//		 /												   \
+	//		v			2				3			4			\
+	//	  1 ----------->  ----------->  ----------->  -----------> 5
+	//		<-----------  <-----------  <-----------  <-----------
+	//		\													 ^
+	//		 \	f2												/
+	//		  \												   /
+	//		   \											  /
+	//			\											 /
+	//			 v											/
+	//			7  --------------------------------------->	 8
+	//
+	void polytopeTest::testMergeFacesAdjacentBeginningWithMidCommonEdge()
+	{
+		ch::polytope polyt;
+
+		std::vector<ch::vid_t> vertexCollection = { 3, 4, 5, 6, 0, 1, 2 };
+		polyt.addFace( vertexCollection );
+
+		vertexCollection = { 4, 3, 2, 1, 7, 8, 5 };
+		polyt.addFace( vertexCollection );
+
+		mergeFaces( polyt, 1, 2 );
+
+		vertexCollection = { 1, 7, 8, 5, 6, 0 };
+		checkMergedFace( polyt, vertexCollection );
+	}
+
+	//--------------------------------------------------------------------------
+
+	//			0  <---------------------------------------	 6
+	//			 /										   ^
+	//			/	f1										\
+	//		   /											 \
+	//		  /												  \
+	//		 /												   \
+	//		v			2				3			4			\
+	//	  1 ----------->  ----------->  ----------->  -----------> 5
+	//		<-----------  <-----------  <-----------  <-----------
+	//		\													 ^
+	//		 \	f2												/
+	//		  \												   /
+	//		   \											  /
+	//			\											 /
+	//			 v											/
+	//			7  --------------------------------------->	 8
+	//
+	void polytopeTest::testMergeFacesAdjacentBeginningWithLastCommonEdge()
+	{
+		ch::polytope polyt;
+
+		std::vector<ch::vid_t> vertexCollection = { 4, 5, 6, 0, 1, 2, 3 };
+		polyt.addFace( vertexCollection );
+
+		vertexCollection = { 8, 5, 4, 3, 2, 1, 7 };
+		polyt.addFace( vertexCollection );
+
+		mergeFaces( polyt, 1, 2 );
+
+		vertexCollection = { 1, 7, 8, 5, 6, 0 };
+		checkMergedFace( polyt, vertexCollection );
+	}
+
+	//--------------------------------------------------------------------------
+
+	//			0  <---------------------------------------	 6
+	//			 /										   ^
+	//			/	f1										\
+	//		   /											 \
+	//		  /												  \
+	//		 /												   \
+	//		v			2				3			4			\
+	//	  1 ----------->  ----------->  ----------->  -----------> 5
+	//		<-----------  <-----------  <-----------  <-----------
+	//		\													 ^
+	//		 \	f2												/
+	//		  \												   /
+	//		   \											  /
+	//			\											 /
+	//			 v											/
+	//			7  --------------------------------------->	 8
+	//
+	void polytopeTest::testMergeFacesAdjacentBeginningWithLastCommonFollowedEdge()
+	{
+		ch::polytope polyt;
+
+		std::vector<ch::vid_t> vertexCollection = { 5, 6, 0, 1, 2, 3, 4 };
+		polyt.addFace( vertexCollection );
+
+		vertexCollection = { 7, 8, 5, 4, 3, 2, 1 };
+		polyt.addFace( vertexCollection );
+
+		mergeFaces( polyt, 1, 2 );
+
+		vertexCollection = { 5, 6, 0, 1, 7, 8 };
+		checkMergedFace( polyt, vertexCollection );
 	}
 
 	//--------------------------------------------------------------------------
