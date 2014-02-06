@@ -267,6 +267,7 @@ endef
 
 programs :=
 libraries :=
+run-programs :=
 
 #	$(call module-inclusion, module-name)
 define module-inclusion
@@ -277,6 +278,7 @@ endef
 define module-target-retrieval
 	libraries += $$($1-lib)-target
 	programs  += $$($1-test-exe)-target
+	run-programs += $1-run-test-target
 endef
 
 #	$(call build-message, print-out)
@@ -292,9 +294,26 @@ endef
 #	$(call post-build-message)
 define post-build-message
 	$(GREEN)
-	@printf "Build is done.\n"
+	@printf "Build done.\n"
 	$(NORMAL)
 endef
+
+#	$(call test-message, print-out-message)
+define test-message
+	$(GREEN)
+	@printf "\nRun test..." 
+	$(RED)
+	@printf "\t%s\n"	$1
+	$(NORMAL)
+endef
+
+#	$(call post-test-message)
+define post-test-message
+	$(GREEN)
+	@printf "Test finished.\n"
+	$(NORMAL)
+endef
+
 
 .PHONY: all
 all:
@@ -315,9 +334,8 @@ $(eval $(foreach mod,$(module-names),							\
 all:  $(libraries)  $(programs)
 
 .PHONY: run-tests
-run-tests: $(programs)
-	$(foreach mod,$(module-names),							\
-					@$(addprefix ./,$($(mod)-test-exe)) ||:)
+run-tests: $(run-programs)
+
 
 .PHONY: clean-message
 clean-message:

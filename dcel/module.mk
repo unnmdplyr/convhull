@@ -112,6 +112,32 @@ $($(current-dir)-test-exe)-target:	$($(current-dir)-lib)-target								\
 									$(subst /,-,$($(current-dir)-test-dir))-build-message		\
 									$($(current-dir)-test-exe)									\
 									$(subst /,-,$($(current-dir)-test-dir))-post-build-message
+
+#	E.g. dcel-run-test-message
+.PHONY: $(current-dir)-run-test-message
+$(current-dir)-run-test-message:
+	$(call test-message, $($(current-dir)-test-exe))
+
+#	E.g. dcel-post-run-test-message
+.PHONY: $(current-dir)-post-run-test-message
+$(current-dir)-post-run-test-message:
+	$(call post-test-message)
+
+#	E.g. dcel-run-test
+.PHONY: $(current-dir)-run-test
+$(current-dir)-run-test:
+	@$(addprefix ./,$($(current-dir)-test-exe)) || :
+
+#	\brief	This is public target.
+#	E.g. dcel-run-test-target:  build-x86_64/dcel/test/bin/dceltest-target	\
+#								dcel-run-test-message						\
+#								dcel-run-test								\
+#								dcel-post-run-test-message
+.PHONY: $(current-dir)-run-test-target
+$(current-dir)-run-test-target: $($(current-dir)-test-exe)-target	\
+								$(current-dir)-run-test-message		\
+								$(current-dir)-run-test				\
+								$(current-dir)-post-run-test-message
 endef
 
 
