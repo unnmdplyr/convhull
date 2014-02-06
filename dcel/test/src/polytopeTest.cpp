@@ -502,6 +502,15 @@ namespace chtest
 		addFaceTo( polyt, 2, 3, 4 );
 
 		mergeFaces( polyt, 1, 3, false );
+
+		//	Checking that the faces still exist
+		std::vector<ch::fid_t> faceIds;
+		faceIds.reserve(4);
+		faceIds.push_back( 1 );
+		faceIds.push_back( 2 );
+		faceIds.push_back( 3 );
+
+		checkFacesIn( polyt, faceIds );
 	}
 
 	//--------------------------------------------------------------------------
@@ -524,6 +533,56 @@ namespace chtest
 		addFaceTo( polyt, 2, 3, 4 );
 
 		mergeFaces( polyt, 1, 2 );
+
+		//	Checking the nonexisting face
+		std::vector<ch::fid_t> faceIds;
+		faceIds.push_back( 2 );
+
+		checkNonExistingFacesIn( polyt, faceIds );
+
+		//	Go around the face and check whether all the vertices are correct
+		std::vector<ch::vid_t> vertIds;
+		vertIds.reserve(4);
+		vertIds.push_back( 1 );
+		vertIds.push_back( 3 );
+		vertIds.push_back( 2 );
+		vertIds.push_back( 0 );
+
+		{
+		//	Check the vertex IDs in the face
+		std::unique_ptr< ch::iterator<ch::vid_t> > it = polyt.createVertexIterator( 1 );
+		std::vector<ch::vid_t>::const_iterator vit = vertIds.begin();
+
+		for ( it->first(); !it->done(); it->next(), ++vit )
+		{
+			ch::vid_t expVertexId = *vit;
+
+			CPPUNIT_ASSERT_EQUAL( expVertexId, it->current() );
+		}
+
+		CPPUNIT_ASSERT_EQUAL( *vit, *(vertIds.end()) );
+		}
+
+		{
+		//	Create extended vector
+		std::vector<ch::vid_t> extVertIds;
+		extVertIds.reserve( vertIds.size()+1 );
+		std::copy( vertIds.begin(), vertIds.end()		, std::back_inserter( extVertIds ) );
+		std::copy( vertIds.begin(), vertIds.begin() + 1	, std::back_inserter( extVertIds ) );
+
+		std::vector<ch::vid_t>::const_iterator vit = extVertIds.begin();
+
+		//	Check the half edge IDs in the face
+		std::unique_ptr< ch::iterator<ch::heid_t> > it = polyt.createHalfEdgeIterator( 1 );
+
+		for ( it->first(); !it->done(); it->next(), ++vit )
+		{
+			ch::heid_t expHalfEdgeId = std::pair<ch::vid_t,ch::vid_t>( *vit, *(vit+1) );
+
+			CPPUNIT_ASSERT_EQUAL( expHalfEdgeId.first , it->current().first  );
+			CPPUNIT_ASSERT_EQUAL( expHalfEdgeId.second, it->current().second );
+		}
+		}
 	}
 
 	//--------------------------------------------------------------------------

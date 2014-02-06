@@ -189,7 +189,7 @@ namespace ch
 				
 				getHalfEdge( nextHeId, accHalfEdge );
 				cout << "nextHeId: " << nextHeId.first<< ", " << nextHeId.second
-					<< "prev: " << accHalfEdge.prev.first << ", " << accHalfEdge.prev.second
+					<< "    prev: " << accHalfEdge.prev.first << ", " << accHalfEdge.prev.second
 					<< endl;
 				
 //				getHalfEdge( 
@@ -244,7 +244,8 @@ namespace ch
 			getHalfEdge( currentHeId, accHalfEdge );
 			if ( accHalfEdge.incidentFace == fid2 )
 			{
-				accHalfEdge.incidentFace = fid1;
+				half_edges.erase( accHalfEdge );
+				half_edges.insert( (accHalfEdge.incidentFace = fid1, accHalfEdge) );
 				currentHeId = accHalfEdge.next;
 			}
 			else
@@ -254,6 +255,34 @@ namespace ch
 		}
 
 		cout << "\nafter face id overwrite\n" << endl;
+
+		//	Remove the id of the 2nd face from the face collection.
+		faces.erase( (accFace.id = fid2, accFace) );
+		assert( faces.find( accFace ) == faces.end() );
+
+		//	If the 1st face outerComponent field points to a removed half edge
+		//	then let point it to an existing one.
+		face_t::const_iterator fit = faces.find( (accFace.id = fid1, accFace) );
+
+		if ( !halfEdgeExists( fit->outerComponent ) )
+		{
+			cout << "\nthe face outerComponent edge doesn't exist " << fit->outerComponent.first
+						<< ", " << fit->outerComponent.second << endl;
+
+			faces.erase( fit );
+			faces.insert( /*fit,*/ (accFace.outerComponent = firstIn2ndFaceIt, accFace) );
+		}
+		else
+			cout << "\nthe face outerComponent edge exist " << fit->outerComponent.first << ", "
+						<< fit->outerComponent.second << "\n" << endl;
+
+		std::unique_ptr< ch::iterator<ch::heid_t> > it = createHalfEdgeIterator( 1 );
+
+		for ( it->first(); !it->done(); it->next() )
+		{
+			getHalfEdge( it->current(), accHalfEdge );
+			cout << "incidentFaceId: " << accHalfEdge.incidentFace << endl;
+		}
 
 		return true;
 	}
