@@ -10,6 +10,7 @@ $(current-dir)-dir = $(call module-directory,$(current-dir))
 $(current-dir)-src = $(call module-sources,$($(current-dir)-dir))
 $(current-dir)-inc = $(call module-includes,$($(current-dir)-dir))
 $(current-dir)-obj = $(call module-objects,$($(current-dir)-src))
+$(current-dir)-dep = $(call module-dependencies,$($(current-dir)-obj))
 $(current-dir)-lib = $(call module-library,$($(current-dir)-dir))
 
 #	E.g. dcel-target-with-prerequisites
@@ -53,6 +54,7 @@ $(current-dir)-test-dir = $(call module-test-directory,$(current-dir))
 $(current-dir)-test-src = $(call module-test-sources,$($(current-dir)-test-dir))
 $(current-dir)-test-inc = $(call module-test-includes,$($(current-dir)-test-dir))
 $(current-dir)-test-obj = $(call module-test-objects,$($(current-dir)-test-src))
+$(current-dir)-test-dep = $(call module-test-dependencies,$($(current-dir)-test-obj))
 $(current-dir)-test-exe = $(call module-test-executable,$($(current-dir)-test-dir))
 
 #	E.g. build-x86_64/dcel/bin/
@@ -138,6 +140,17 @@ $(current-dir)-run-test-target: $($(current-dir)-test-exe)-target	\
 								$(current-dir)-run-test-message		\
 								$(current-dir)-run-test				\
 								$(current-dir)-post-run-test-message
+
+#	E.g. dcel-debug-test-target:  build-x86_64/dcel/test/bin/dceltest-target
+.PHONY: $(current-dir)-debug-test-target
+$(current-dir)-debug-test-target: $($(current-dir)-test-exe)-target
+	$(GREEN)
+	@printf "\nDebugging starts..."
+	$(RED)
+	@printf "\t%s\n" $($(current-dir)-test-exe)
+	$(NORMAL)
+	$Q/usr/lib/llvm-3.4/bin/lldb  $($(current-dir)-test-exe)
+
 endef
 
 

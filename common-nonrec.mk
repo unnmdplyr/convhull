@@ -27,7 +27,7 @@ else
 endif
 
 #	Quiet or verbose
-Q = @
+Q := @
 
 #-------------------------------------------------------------------------------
 #	Library part
@@ -90,6 +90,9 @@ module-includes = $1/$(source-dir)
 
 #	$(call module-objects, module-source-files)
 module-objects = $(call source-to-object,$1)
+
+#	$(call module-dependencies, module-object-files)
+module-dependencies = $(subst .o,.d,$1)
 
 #	$(call module-linked-object, module-name, linked-object-name)
 module-linked-object =	$(addsuffix /$(linked-dir)/$2,	\
@@ -199,6 +202,9 @@ module-test-includes = $(call module-includes,$1)  $(call module-includes,$(subs
 ##	$(call module-test-objects, module-source-files)
 module-test-objects = $(call source-to-object,$1)
 
+##	$(call module-test-dependencies, module-object-files)
+module-test-dependencies = $(call module-dependencies,$1)
+
 ##	$(call module-test-executable, module-name)
 module-test-executable = $(call module-linked-object,$1,$(subst /,,$1))
 
@@ -281,6 +287,11 @@ define module-target-retrieval
 	run-programs += $1-run-test-target
 endef
 
+#	$(call module-dependency-inclusion, module-name)
+define module-dependency-inclusion
+	-include $$($1-dep) $$($1-test-dep)
+endef
+
 #	$(call build-message, print-out)
 define build-message
 	$(GREEN)
@@ -301,7 +312,7 @@ endef
 #	$(call test-message, print-out-message)
 define test-message
 	$(GREEN)
-	@printf "\nRun test..." 
+	@printf "\nRun test..."
 	$(RED)
 	@printf "\t%s\n"	$1
 	$(NORMAL)
@@ -329,6 +340,10 @@ $(eval $(foreach mod,$(module-names),							\
 
 $(eval $(foreach mod,$(module-names),							\
 	$(eval $(call module-target-retrieval,$(mod)))))
+
+$(if $(filter-out "clean","$(MAKECMDGOALS)"),					\
+	$(eval $(foreach mod,$(module-names),						\
+		$(eval $(call module-dependency-inclusion,$(mod))))),)
 
 .PHONY: all
 all:  $(libraries)  $(programs)
