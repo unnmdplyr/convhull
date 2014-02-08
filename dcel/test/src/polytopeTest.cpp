@@ -395,9 +395,7 @@ namespace chtest
 		removeFaceFrom( polyt, 1 );
 
 		//	Checking the nonexisting faces
-		std::vector<ch::fid_t> faceIds;
-		faceIds.push_back( 1 );
-
+		std::vector<ch::fid_t> faceIds = { 1 };
 		checkNonExistingFacesIn( polyt, faceIds );
 
 		removeFaceFrom( polyt, 1, false );
@@ -431,9 +429,7 @@ namespace chtest
 		removeFaceFrom( polyt, 1 );
 
 		//	Checking the nonexisting faces
-		std::vector<ch::fid_t> faceIds;
-		faceIds.push_back( 1 );
-
+		std::vector<ch::fid_t> faceIds = { 1 };
 		checkNonExistingFacesIn( polyt, faceIds );
 
 		removeFaceFrom( polyt, 1, false );
@@ -471,9 +467,7 @@ namespace chtest
 		removeFaceFrom( polyt, 3 );
 
 		//	Checking the nonexisting faces
-		std::vector<ch::fid_t> faceIds;
-		faceIds.push_back( 3 );
-
+		std::vector<ch::fid_t> faceIds = { 3 };
 		checkNonExistingFacesIn( polyt, faceIds );
 
 		removeFaceFrom( polyt, 3, false );
@@ -530,7 +524,7 @@ namespace chtest
 		mergeFaces( polyt, 1, 2 );
 
 		std::vector<ch::vid_t> vertexCollection = { 1, 3, 2, 0 };
-		checkMergedFace( polyt, vertexCollection );
+		checkMergedFace( polyt, vertexCollection, true );
 	}
 
 	//--------------------------------------------------------------------------

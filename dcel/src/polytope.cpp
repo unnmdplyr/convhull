@@ -34,7 +34,6 @@ namespace ch
 
 		assert( vertexIds.size() > 2 );
 
-
 		vector<vid_t> extVertIds;		//	extended vertex ids
 		extVertIds.reserve( vertexIds.size()+3 );
 		
@@ -166,6 +165,7 @@ namespace ch
 			{
 				currentHeId	= nextHeId;
 				twinHeId	= prevTwinHeId;
+				vertices.erase( (accVertex.id = currentHeId.second, accVertex) );
 			}
 			//					 ^
 			//					/
@@ -209,6 +209,7 @@ namespace ch
 			{
 				removeHalfEdge( currentHeId	);		currentHeId	= prevHeId;
 				removeHalfEdge( twinHeId	);		twinHeId	= nextTwinHeId;
+				vertices.erase( (accVertex.id = currentHeId.second, accVertex) );
 			}
 			else
 			{

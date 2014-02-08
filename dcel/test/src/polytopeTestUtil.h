@@ -22,7 +22,7 @@ namespace chtest
 	void checkNonExistingFacesIn( const ch::polytope& polyt, const std::vector<ch::fid_t>& faceIds );
 
 	void mergeFaces( ch::polytope& polyt, ch::fid_t fid1, ch::fid_t fid2, bool expVal = true );
-	void checkMergedFace( const ch::polytope& polyt, const std::vector<ch::vid_t>& vertIds );
+	void checkMergedFace( ch::polytope& polyt, const std::vector<ch::vid_t>& vertIds, bool first = false );
 }
 
 #endif /* POLYTOPETESTUTIL_H_ */

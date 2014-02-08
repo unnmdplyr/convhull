@@ -244,3 +244,15 @@
 				accHalfEdge.prev = 
 			}
 
+
+
+
+
+/usr/lib/llvm-3.4/bin/lldb     build-x86_64-debug/dcel/test/bin/dceltest
+
+breakpoint set --file polytopeTest.cpp  --line 524
+
+run
+
+
+frame variable <local_variable>

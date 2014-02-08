@@ -170,7 +170,7 @@ namespace chtest
 
 	//--------------------------------------------------------------------------
 
-	void checkMergedFace( const ch::polytope& polyt, const std::vector<ch::vid_t>& vertIds )
+	void checkMergedFace( ch::polytope& polyt, const std::vector<ch::vid_t>& vertIds, bool first )
 	{
 		//	Checking the nonexisting face
 		std::vector<ch::fid_t> faceIds = { 2 };
@@ -205,6 +205,21 @@ namespace chtest
 			CPPUNIT_ASSERT_EQUAL( expHalfEdgeId.first , heit->current().first  );
 			CPPUNIT_ASSERT_EQUAL( expHalfEdgeId.second, heit->current().second );
 		}
+
+		//	We are not able to check directly the removed vertices and edges. If
+		//	two faces are added again which bring again the edges which was removed
+		//	from the original two faces and some vertices or egdes would
+		//	have remained then during the addition the asserts in the code will
+		//	interrupt the test execution.
+		//	Ok, the vertices won't be checked but at least the edges.
+		std::vector<ch::vid_t> vertexCollection;
+		if ( first ) vertexCollection = {1, 2, 10};
+		else vertexCollection = {1, 2, 3, 4, 5, 10};
+		polyt.addFace( vertexCollection );
+
+		if ( first ) vertexCollection = {2, 1, 11};
+		else vertexCollection = {5, 4, 3, 2, 1, 11};
+		polyt.addFace( vertexCollection );
 	}
 
 	//--------------------------------------------------------------------------
