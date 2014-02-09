@@ -12,7 +12,7 @@
 namespace ch
 {
 
-	class polytope
+	class polytope final
 	{
 	public:
 		polytope();
@@ -28,6 +28,9 @@ namespace ch
 		std::unique_ptr< iterator<heid_t> > createHalfEdgeIterator	(fid_t faceId)	const;
 		std::unique_ptr< iterator<vid_t > > createVertexIterator	(fid_t faceId)	const;
 		std::unique_ptr< iterator<heid_t> > createHalfEdgesAroundVertexIterator(vid_t vertexId) const;
+
+		polytope( const polytope& rhs ) = delete;
+		polytope& operator=( const polytope& rhs ) = delete;
 
 	private:
 		vertex_t	vertices;

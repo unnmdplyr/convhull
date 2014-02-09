@@ -57,38 +57,39 @@ $(current-dir)-test-obj = $(call module-test-objects,$($(current-dir)-test-src))
 $(current-dir)-test-dep = $(call module-test-dependencies,$($(current-dir)-test-obj))
 $(current-dir)-test-exe = $(call module-test-executable,$($(current-dir)-test-dir))
 
-#	E.g. build-x86_64/dcel/bin/
-dirs-of-libraries-to-link = $(call module-linked-dir,$(current-dir))
 
-WL_PATH_PF = -Wl,-rpath,
+#	current test dir prefix. E.g. dcel-test
+ctdp = $(subst /,-,$($(current-dir)-test-dir))
 
 #	$(call preset-link-flags)
-define preset-link-flags
-
-	LDFLAGS =	$(addprefix -L,$(dirs-of-libraries-to-link))	\
-				$(addprefix $(WL_PATH_PF),$(dirs-of-libraries-to-link))
+define $(ctdp)-preset-link-flags
+	
+	#	E.g. dcel-test-dirs-of-libraries-to-link = build-x86_64/dcel/bin/
+	$(eval $(ctdp)-dirs-of-libraries-to-link = $(call module-linked-dir,$(current-dir)))
+	
+	LDFLAGS =	$(addprefix -L,$($(ctdp)-dirs-of-libraries-to-link))	\
+				$(addprefix $(WL_PATH_PF),$($(ctdp)-dirs-of-libraries-to-link))
 
 	#	libcppuint-1.12-1 and libcppuint-dev packages needed
-	libraries-to-link = cppunit  $(current-dir)
+	$(ctdp)-libraries-to-link = cppunit  $(current-dir)
 endef
 
 #	$(call reset-link-flags)
-define reset-link-flags
-	WL_PATH_PF =
+define $(ctdp)-reset-link-flags
 	LDFLAGS =
 endef
 
 #	E.g. dcel-test-target-with-prerequisites
-define $(subst /,-,$($(current-dir)-test-dir))-target-with-prerequisites
+define $(ctdp)-target-with-prerequisites
 
 #	E.g. dcel-test-build-message
-.PHONY: $(subst /,-,$($(current-dir)-test-dir))-build-message
-$(subst /,-,$($(current-dir)-test-dir))-build-message:
+.PHONY: $(ctdp)-build-message
+$(ctdp)-build-message:
 	$(call build-message, $($(current-dir)-test-exe))
 
 #	E.g. dcel-test-post-build-message
-.PHONY: $(subst /,-,$($(current-dir)-test-dir))-post-build-message
-$(subst /,-,$($(current-dir)-test-dir))-post-build-message:
+.PHONY: $(ctdp)-post-build-message
+$(ctdp)-post-build-message:
 	$(call post-build-message)
 
 #	E.g. build-x86_64/dcel/test/obj/%.o: dcel/test/src/%.cpp
@@ -100,9 +101,9 @@ $(call module-test-objects-target,$($(current-dir)-test-dir)): $(call module-tes
 
 #	E.g. build-x86_64/dcel/test/bin/dceltest: build-x86_64/dcel/test/obj/*.o
 $($(current-dir)-test-exe): $($(current-dir)-test-obj)
-	$(eval $(call preset-link-flags))
-	$(call link-test-objects-to-executable,$$@,$$^,$(libraries-to-link))
-	$(eval $(call  reset-link-flags))
+	$(eval $(call $(ctdp)-preset-link-flags))
+	$(call link-test-objects-to-executable,$$@,$$^,$($(ctdp)-libraries-to-link))
+	$(eval $(call $(ctdp)-reset-link-flags))
 
 #	\brief	This is public target.
 #	E.g. build-x86_64/dcel/test/bin/dceltest-target:	build-x86_64/dcel/bin/libdcel.so-target	\
@@ -111,9 +112,9 @@ $($(current-dir)-test-exe): $($(current-dir)-test-obj)
 #														dcel-test-post-build-message			\
 .PHONY: $($(current-dir)-test-exe)-target
 $($(current-dir)-test-exe)-target:	$($(current-dir)-lib)-target								\
-									$(subst /,-,$($(current-dir)-test-dir))-build-message		\
+									$(ctdp)-build-message										\
 									$($(current-dir)-test-exe)									\
-									$(subst /,-,$($(current-dir)-test-dir))-post-build-message
+									$(ctdp)-post-build-message
 
 #	E.g. dcel-run-test-message
 .PHONY: $(current-dir)-run-test-message
