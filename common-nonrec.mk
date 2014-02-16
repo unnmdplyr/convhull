@@ -30,8 +30,10 @@ endif
 Q := @
 
 #	Linking related constant
-WL_PATH_PF = -Wl,-rpath,
+WL_PATH_PF := -Wl,-rpath,
 
+#	Debugger
+DBG := /usr/lib/llvm-3.4/bin/lldb
 
 #-------------------------------------------------------------------------------
 #	Library part
@@ -51,9 +53,9 @@ module-names := $(notdir $(module-dirs))
 #	E.g.	build-x86_64
 build-dir-pre := build-$(shell uname -i)
 ifdef RELEASE
-	build-dir = $(addsuffix -release,$(build-dir-pre))
+	build-dir := $(addsuffix -release,$(build-dir-pre))
 else
-	build-dir = $(addsuffix -debug,$(build-dir-pre))
+	build-dir := $(addsuffix -debug,$(build-dir-pre))
 endif
 
 #	E.g.	build-x86_64/dh  build-x86_64/dcel
@@ -271,6 +273,7 @@ define reset-compilation-flags
 	$(if $(filter-out "clang++","$(CXX)"),,$(eval $(call subtract-compilation-flags)))
 endef
 
+
 #-------------------------------------------------------------------------------
 #	Targets
 #-------------------------------------------------------------------------------
@@ -329,6 +332,15 @@ define post-test-message
 	$(NORMAL)
 endef
 
+#	$(call start-debugging, executable)
+define start-debugging
+	$(GREEN)
+	@printf "\nDebugging starts..."
+	$(RED)
+	@printf "\t%s\n" $1
+	$(NORMAL)
+	$Q$(DBG)  $1
+endef
 
 .PHONY: all
 all:
