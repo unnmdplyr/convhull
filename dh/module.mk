@@ -3,8 +3,8 @@
 #	Library part
 #-------------------------------------------------------------------------------
 
-current-makefile := $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
-current-dir := $(subst /,,$(dir $(current-makefile)))
+#current-makefile := $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+#current-dir := $(subst /,,$(dir $(current-makefile)))
 
 dh-dir = $(call module-directory,dh)
 dh-src = $(call module-sources,$(dh-dir))
@@ -60,8 +60,6 @@ dh-test-exe = $(call module-test-executable,$(dh-test-dir))
 
 #	test dir prefix. E.g. dh-test
 dh-tdp = $(subst /,-,$(dh-test-dir))
-
-$(warning --------- $(dh-tdp))
 
 #	$(call dh-test-preset-link-flags)
 define $(dh-tdp)-preset-link-flags

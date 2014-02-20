@@ -26,6 +26,18 @@ else
 	CXXFLAGS	+= -O0 -g3
 endif
 
+
+#	Architecture dependent settings
+ARCH := $(shell uname -m)
+ARCHDEC := $(filter 64,$(subst _, ,$(ARCH)))
+
+I386-INCLUDE	:= $(if $(ARCHDEC),,/usr/include/i386-linux-gnu/c++/4.8/)
+I386-INCLUDES	:= $(if $(ARCHDEC),,$(addprefix -I,$(I386-INCLUDE)))
+
+I386-LIBRARY	:= $(if $(ARCHDEC),,/usr/lib/i386-linux-gnu/)
+I386-LIBRARIES	:= $(if $(ARCHDEC),,$(addprefix -L,$(I386-LIBRARY)))
+
+
 #	Quiet or verbose
 Q := @
 
@@ -129,6 +141,7 @@ define make-depend
 					-MF "$3"\
 					-MT "$2"\
 					$(addprefix -I,$4)	\
+					$(I386-INCLUDES)	\
 					$1
 	$(CYAN)
 	@printf "\t...done.\n"
@@ -146,7 +159,7 @@ define compile-sources-to-objects
 	$(BLUE)
 	@printf "Compiling...\t%s\n" $1
 	$(NORMAL)
-	$Q$(COMPILE.cpp)  -fPIC  -o $1  $2
+	$Q$(COMPILE.cpp)  $(I386-INCLUDES)  -fPIC  -o $1  $2
 	$(GREEN)
 	@printf "\t-> compiled\n"
 	$(NORMAL)
@@ -232,7 +245,7 @@ define compile-sources-to-test-objects
 	$(BLUE)
 	@printf "Compiling...\t%s\n" $1
 	$(NORMAL)
-	$Q$(COMPILE.cpp)  $(addprefix -I,$3)  -o $1  $2
+	$Q$(COMPILE.cpp)  $(I386-INCLUDES)  $(addprefix -I,$3)  -o $1  $2
 	$(GREEN)
 	@printf "\t-> compiled\n"
 	$(NORMAL)
@@ -246,7 +259,7 @@ define link-test-objects-to-executable
 	$(PURPLE)
 	@printf "Linking...\t%s\n" $1
 	$(NORMAL)
-	$Q$(LINK.cpp)  $(addprefix -l,$3)  -o $1  $2
+	$Q$(LINK.cpp)  $(addprefix -l,$3)  $(I386-LIBRARIES)  -o $1  $2
 	$(GREEN)
 	@printf "\t-> linked\n"
 	$(NORMAL)
