@@ -28,14 +28,16 @@ endif
 
 
 #	Architecture dependent settings
+define set-i386-architecture-vars
+	I386-INCLUDE	:= /usr/include/i386-linux-gnu/c++/4.8/
+	I386-INCLUDES	:= $(addprefix -I,$(I386-INCLUDE))
+
+	I386-LIBRARY	:= /usr/lib/i386-linux-gnu/
+	I386-LIBRARIES	:= $(addprefix -L,$(I386-LIBRARY))
+endef
+
 ARCH := $(shell uname -m)
-ARCHDEC := $(filter 64,$(subst _, ,$(ARCH)))
-
-I386-INCLUDE	:= $(if $(ARCHDEC),,/usr/include/i386-linux-gnu/c++/4.8/)
-I386-INCLUDES	:= $(if $(ARCHDEC),,$(addprefix -I,$(I386-INCLUDE)))
-
-I386-LIBRARY	:= $(if $(ARCHDEC),,/usr/lib/i386-linux-gnu/)
-I386-LIBRARIES	:= $(if $(ARCHDEC),,$(addprefix -L,$(I386-LIBRARY)))
+$(if $(filter 64,$(subst _, ,$(ARCH))),,$(eval $(call set-i386-architecture-vars)))
 
 
 #	Quiet or verbose
