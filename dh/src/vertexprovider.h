@@ -12,8 +12,9 @@ namespace ch
 	{
 	public:
 		vertexprovider( const T* data, size_t coordPad_, size_t diffSize_, size_t vertNum_ );
+		~vertexprovider();
 
-		virtual dataholder<T>::vertexdata<T> operator[]( size_t i ) const override;
+		virtual vertexdata<T> operator[]( size_t i ) const override;
 		virtual size_t size() const override;
 	};
 

@@ -2,7 +2,7 @@
 #ifndef POLYTOPETESTUTIL_H_
 #define POLYTOPETESTUTIL_H_
 
-#include "polytope.h"
+#include "dcel_intf.h"
 
 
 namespace chtest

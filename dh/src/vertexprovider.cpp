@@ -1,5 +1,6 @@
 
 #include "vertexprovider.h"
+#include <cassert>
 
 namespace ch
 {
@@ -10,14 +11,18 @@ namespace ch
 	}
 
 	template <typename T>
-	dataholder<T>::vertexdata<T> vertexprovider<T>::operator[]( size_t i ) const
+	vertexprovider<T>::~vertexprovider()
+	{
+	}
+
+	template <typename T>
+	vertexdata<T> vertexprovider<T>::operator[]( size_t i ) const
 	{
 		assert( i < this->vertNum );
 		size_t first = i * this->diffSize;
-		return dataholder<T>::template vertexdata<T>(
-											this->dataPtr[first + 0*sizeof(T) + 0*this->coordPad],
-											this->dataPtr[first + 1*sizeof(T) + 1*this->coordPad],
-											this->dataPtr[first + 2*sizeof(T) + 2*this->coordPad] );
+		return vertexdata<T>(	this->dataPtr[first + 0*sizeof(T) + 0*this->coordPad],
+								this->dataPtr[first + 1*sizeof(T) + 1*this->coordPad],
+								this->dataPtr[first + 2*sizeof(T) + 2*this->coordPad] );
 	}
 
 	template <typename T>

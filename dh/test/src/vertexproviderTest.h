@@ -11,14 +11,14 @@ namespace chtest
 	{
 	public:
 		CPPUNIT_TEST_SUITE( vertexproviderTest );
-		CPPUNIT_TEST( testSetLessOperator				);
+		CPPUNIT_TEST( testCreateDataHolder				);
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
 		void setUp();
 		void tearDown();
 
-		void testSetLessOperator();
+		void testCreateDataHolder();
 	};
 }
 

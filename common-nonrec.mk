@@ -218,7 +218,8 @@ module-test-directory = $(addsuffix /$(test-dir),$1)
 module-test-sources = $(call module-sources,$1)
 
 ##	$(call module-test-includes, module-name)
-module-test-includes = $(call module-includes,$1)  $(call module-includes,$(subst /$(test-dir),,$1))
+module-test-includes =	$(call module-includes,$1)							\
+						$(addsuffix /include,$(subst /$(test-dir),,$1))
 
 ##	$(call module-test-objects, module-source-files)
 module-test-objects = $(call source-to-object,$1)

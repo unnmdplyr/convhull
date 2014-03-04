@@ -63,10 +63,10 @@ $(current-dir)-tdp = $(subst /,-,$($(current-dir)-test-dir))
 
 #	$(call dcel-test-preset-link-flags)
 define $($(current-dir)-tdp)-preset-link-flags
-	
+
 	#	E.g. dcel-test-dirs-of-libraries-to-link = build-x86_64/dcel/bin/
 	$(eval $($(current-dir)-tdp)-dirs-of-libraries-to-link = $(call module-linked-dir,$(current-dir)))
-	
+
 	LDFLAGS =	$(addprefix -L,$($($(current-dir)-tdp)-dirs-of-libraries-to-link))	\
 				$(addprefix $(WL_PATH_PF),$($($(current-dir)-tdp)-dirs-of-libraries-to-link))
 
@@ -96,7 +96,7 @@ $($(current-dir)-tdp)-post-build-message:
 $(call module-test-objects-target,$($(current-dir)-test-dir)): $(call module-test-objects-prerequisites,$($(current-dir)-test-dir))
 	$(eval $(call preset-compilation-flags))
 	$(call make-depend,$$<,$$@,$$(subst .o,.d,$$@),$($(current-dir)-test-inc))
-	$(call compile-sources-to-test-objects,$$@,$$<,$($(current-dir)-inc))
+	$(call compile-sources-to-test-objects,$$@,$$<,$($(current-dir)-test-inc))
 	$(eval $(call  reset-compilation-flags))
 
 #	E.g. build-x86_64/dcel/test/bin/dceltest: build-x86_64/dcel/test/obj/*.o
@@ -112,7 +112,7 @@ $($(current-dir)-test-exe): $($(current-dir)-test-obj)
 #														dcel-test-post-build-message			\
 .PHONY: $($(current-dir)-test-exe)-target
 $($(current-dir)-test-exe)-target:	$($(current-dir)-lib)-target								\
-									$($(current-dir)-tdp)-build-message										\
+									$($(current-dir)-tdp)-build-message							\
 									$($(current-dir)-test-exe)									\
 									$($(current-dir)-tdp)-post-build-message
 

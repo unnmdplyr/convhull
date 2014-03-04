@@ -1,7 +1,9 @@
 
 
+#include <vector>
 #include "vertexproviderTest.h"
 
+#include "dataholder_impl.h"
 
 //	---- only to printout
 #include <iostream>
@@ -26,8 +28,12 @@ namespace chtest
 
 	//--------------------------------------------------------------------------
 
-	void vertexproviderTest::testSetLessOperator()
+	void vertexproviderTest::testCreateDataHolder()
 	{
-		CPPUNIT_ASSERT_EQUAL( 1, 1 );
+		std::vector<float> vertices = {1,2,3,4,5,6};
+		ch::dataholder<float>& firstDH  = ch::getDataHolder<float>( &vertices[0], 0, 3*sizeof(float), 2 );
+		ch::dataholder<float>& secondDH = ch::getDataHolder<float>( &vertices[0], 0, 3*sizeof(float), 2 );
+
+		CPPUNIT_ASSERT_EQUAL( &firstDH, &secondDH );
 	}
 }

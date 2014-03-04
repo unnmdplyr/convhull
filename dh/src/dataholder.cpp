@@ -3,9 +3,8 @@
 
 namespace ch
 {
-	template <typename T>
 	template <typename U>
-	dataholder<T>::vertexdata<U>::vertexdata( U x_, U y_, U z_ )
+	vertexdata<U>::vertexdata( U x_, U y_, U z_ )
 		: x(x_)
 		, y(y_)
 		, z(z_) {}

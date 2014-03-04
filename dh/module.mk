@@ -3,9 +3,6 @@
 #	Library part
 #-------------------------------------------------------------------------------
 
-#current-makefile := $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
-#current-dir := $(subst /,,$(dir $(current-makefile)))
-
 dh-dir = $(call module-directory,dh)
 dh-src = $(call module-sources,$(dh-dir))
 dh-inc = $(call module-includes,$(dh-dir))
@@ -27,22 +24,19 @@ dh-post-build-message:
 	$(call post-build-message)
 
 #	E.g. build-x86_64/dh/obj/%.o: dh/src/%.cpp
-$(call module-objects-target, dh): $(call module-objects-prerequisites, dh)
-	$(call make-depend,$$<,$$@,$$(subst .o,.d,$$@),)
-	$(call compile-sources-to-objects,$$@,$$<)
+$(call module-objects-target, dh):
 
 #	E.g. build-x86_64/dh/bin/libdh.so: build-x86_64/dh/obj/*.o
-$(dh-lib): $(dh-obj)
-	$(call link-objects-to-library,$$@,$$^)
+$(dh-lib):
 
 #	\brief	This is public target.
-#	E.g. build-x86_64/dh/bin/libdh.so-target:	dh-build-message					\
-#													build-x86_64/dh/bin/libdh.so	\
-#													dh-post-build-message
+#	E.g. build-x86_64/dh/bin/libdh.so-target:	dh-build-message				\
+#												build-x86_64/dh/bin/libdh.so	\
+#												dh-post-build-message
 .PHONY: $(dh-lib)-target
 $(dh-lib)-target:	dh-build-message		\
-								$(dh-lib)				\
-								dh-post-build-message
+					$(dh-lib)				\
+					dh-post-build-message
 endef
 
 
@@ -71,7 +65,7 @@ define $(dh-tdp)-preset-link-flags
 				$(addprefix $(WL_PATH_PF),$($(dh-tdp)-dirs-of-libraries-to-link))
 
 	#	libcppuint-1.12-1 and libcppuint-dev packages needed
-	$(dh-tdp)-libraries-to-link = cppunit  dh
+	$(dh-tdp)-libraries-to-link = cppunit
 endef
 
 #	$(call dh-test-reset-link-flags)
@@ -96,7 +90,7 @@ $(dh-tdp)-post-build-message:
 $(call module-test-objects-target,$(dh-test-dir)): $(call module-test-objects-prerequisites,$(dh-test-dir))
 	$(eval $(call preset-compilation-flags))
 	$(call make-depend,$$<,$$@,$$(subst .o,.d,$$@),$(dh-test-inc))
-	$(call compile-sources-to-test-objects,$$@,$$<,$(dh-inc))
+	$(call compile-sources-to-test-objects,$$@,$$<,$(dh-test-inc))
 	$(eval $(call  reset-compilation-flags))
 
 #	E.g. build-x86_64/dh/test/bin/dhtest: build-x86_64/dh/test/obj/*.o
@@ -111,10 +105,10 @@ $(dh-test-exe): $(dh-test-obj)
 #													build-x86_64/dh/test/bin/dhtest		\
 #													dh-test-post-build-message			\
 .PHONY: $(dh-test-exe)-target
-$(dh-test-exe)-target:	$(dh-lib)-target								\
-									$(dh-tdp)-build-message				\
-									$(dh-test-exe)						\
-									$(dh-tdp)-post-build-message
+$(dh-test-exe)-target:	$(dh-lib)-target					\
+						$(dh-tdp)-build-message				\
+						$(dh-test-exe)						\
+						$(dh-tdp)-post-build-message
 
 #	E.g. dh-run-test-message
 .PHONY: dh-run-test-message
