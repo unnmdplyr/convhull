@@ -19,10 +19,10 @@ namespace ch
 	vertexdata<T> vertexprovider<T>::operator[]( size_t i ) const
 	{
 		assert( i < this->vertNum );
-		size_t first = i * this->diffSize;
-		return vertexdata<T>(	this->dataPtr[first + 0*sizeof(T) + 0*this->coordPad],
-								this->dataPtr[first + 1*sizeof(T) + 1*this->coordPad],
-								this->dataPtr[first + 2*sizeof(T) + 2*this->coordPad] );
+		size_t first = i * this->diffSize / sizeof(T);
+		return vertexdata<T>(	this->dataPtr[first + 0 + 0*this->coordPad],
+								this->dataPtr[first + 1 + 1*this->coordPad],
+								this->dataPtr[first + 2 + 2*this->coordPad] );
 	}
 
 	template <typename T>
