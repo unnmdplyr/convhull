@@ -11,16 +11,16 @@ namespace chtest
 	{
 	public:
 		CPPUNIT_TEST_SUITE( vertexproviderTest );
-		CPPUNIT_TEST( testCreateDataHolder				);
 		CPPUNIT_TEST( testDataHolderCheckDataPart		);
+		CPPUNIT_TEST( testDataHolderCheckPadding		);
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
 		void setUp();
 		void tearDown();
 
-		void testCreateDataHolder();
 		void testDataHolderCheckDataPart();
+		void testDataHolderCheckPadding();
 	};
 }
 

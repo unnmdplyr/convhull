@@ -19,7 +19,7 @@ namespace ch
 	};
 
 	template <typename T>
-	dataholder<T>& getDataHolder( const T* data, size_t coordPad_, size_t diffSize_, size_t vertNum_ );
+	std::unique_ptr<dataholder<T>> getDataHolder( const T* data, size_t coordPad_, size_t diffSize_, size_t vertNum_ );
 }
 
 #endif	/*	VERTEXPROVIDER_H_	*/
