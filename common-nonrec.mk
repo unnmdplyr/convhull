@@ -106,7 +106,7 @@ module-directory = $1
 module-sources = $(wildcard $1/$(source-dir)/*.cpp)
 
 #	$(call module-includes, module-name)
-module-includes = $1/$(source-dir)
+module-includes = $1/$(source-dir)  common/include
 
 #	$(call module-objects, module-source-files)
 module-objects = $(call source-to-object,$1)
@@ -156,12 +156,12 @@ endef
 #COMPILE.cpp = $(COMPILE.cc)
 #COMPILE.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 
-# $(call compile-sources-to-objects, target, source-files)
+# $(call compile-sources-to-objects, target, source-files, include-dirs)
 define compile-sources-to-objects
 	$(BLUE)
 	@printf "Compiling...\t%s\n" $1
 	$(NORMAL)
-	$Q$(COMPILE.cpp)  $(I386-INCLUDES)  -fPIC  -o $1  $2
+	$Q$(COMPILE.cpp)  $(I386-INCLUDES)  $(addprefix -I,$3)  -fPIC  -o $1  $2
 	$(GREEN)
 	@printf "\t-> compiled\n"
 	$(NORMAL)

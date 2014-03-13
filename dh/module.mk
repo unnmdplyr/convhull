@@ -103,7 +103,7 @@ $(dh-test-exe): $(dh-test-obj)
 #	E.g. build-x86_64/dh/test/bin/dhtest-target:	build-x86_64/dh/bin/libdh.so-target	\
 #													dh-test-build-message				\
 #													build-x86_64/dh/test/bin/dhtest		\
-#													dh-test-post-build-message			\
+#													dh-test-post-build-message
 .PHONY: $(dh-test-exe)-target
 $(dh-test-exe)-target:	$(dh-lib)-target					\
 						$(dh-tdp)-build-message				\

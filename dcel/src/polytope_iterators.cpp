@@ -71,7 +71,7 @@ namespace ch
 		return faceCollection.end() == faceIt;
 	}
 
-	fid_t polytope::face_iterator::current()
+	const fid_t& polytope::face_iterator::current() const
 	{
 		return faceIt->id;
 	}
@@ -109,7 +109,7 @@ namespace ch
 		return currentHalfEdge == firstHalfEdge  &&  firstHeLeft;
 	}
 
-	heid_t polytope::half_edge_iterator::current()
+	const heid_t& polytope::half_edge_iterator::current() const
 	{
 		return currentHalfEdge;
 	}
@@ -138,7 +138,7 @@ namespace ch
 		return heit->done();
 	}
 
-	vid_t polytope::vertex_iterator::current()
+	const vid_t& polytope::vertex_iterator::current() const
 	{
 		return heit->current().first;
 	}
@@ -221,7 +221,7 @@ namespace ch
 			||  ( leftSideEnd  &&  rightSideEnd );
 	}
 	
-	heid_t polytope::half_edges_around_vertex_iterator::current()
+	const heid_t& polytope::half_edges_around_vertex_iterator::current() const
 	{
 		return currentHalfEdge;
 	}

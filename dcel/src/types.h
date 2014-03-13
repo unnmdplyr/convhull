@@ -20,9 +20,6 @@ namespace ch
 	///	\brief	Face ID type
 	typedef std::size_t fid_t;
 
-	///	\brief	Return type
-	typedef std::size_t ret_t;
-
 	//==========================================================================
 
 	static const heid_t INVALID_EDGE_ID = heid_t(

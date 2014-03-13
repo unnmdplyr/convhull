@@ -24,10 +24,12 @@ namespace ch
 		const char* x = reinterpret_cast<const char*>(this->dataPtr)  +  first  +  0 * this->coordPad  +  0 * sizeof(T);
 		const T* xT = reinterpret_cast<const T*>(x);
 
-		const char* y = reinterpret_cast<const char*>(this->dataPtr)  +  first  +  1 * this->coordPad  +  1 * sizeof(T);
+//		const char* y = reinterpret_cast<const char*>(this->dataPtr)  +  first  +  1 * this->coordPad  +  1 * sizeof(T);
+		const char* y = x  +  1 * this->coordPad  +  1 * sizeof(T);
 		const T* yT = reinterpret_cast<const T*>(y);
 
-		const char* z = reinterpret_cast<const char*>(this->dataPtr)  +  first  +  2 * this->coordPad  +  2 * sizeof(T);
+//		const char* z = reinterpret_cast<const char*>(this->dataPtr)  +  first  +  2 * this->coordPad  +  2 * sizeof(T);
+		const char* z = y  +  1 * this->coordPad  +  1 * sizeof(T);
 		const T* zT = reinterpret_cast<const T*>(z);
 
 		return vertexdata<T>( *xT, *yT, *zT );

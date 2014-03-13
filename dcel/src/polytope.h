@@ -55,7 +55,7 @@ namespace ch
 			virtual void first();
 			virtual void next();
 			virtual bool done();
-			virtual fid_t current();
+			virtual const fid_t& current() const;
 		private:
 			face_t::iterator	faceIt;
 			const face_t& faceCollection;
@@ -69,7 +69,7 @@ namespace ch
 			virtual void first();
 			virtual void next();
 			virtual bool done();
-			virtual heid_t current();
+			virtual const heid_t& current() const;
 		private:
 			heid_t firstHalfEdge;
 			heid_t currentHalfEdge;
@@ -88,7 +88,7 @@ namespace ch
 			virtual void first();
 			virtual void next();
 			virtual bool done();
-			virtual vid_t current();
+			virtual const vid_t& current() const;
 		private:
 			std::unique_ptr< iterator<heid_t> > heit;
 		};
@@ -101,7 +101,7 @@ namespace ch
 			virtual void first();
 			virtual void next();
 			virtual bool done();
-			virtual heid_t current();
+			virtual const heid_t& current() const;
 		private:
 			bool twinHalfEdgeExists( const heid_t heid ) const;
 			heid_t firstHalfEdge;

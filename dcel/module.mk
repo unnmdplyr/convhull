@@ -28,8 +28,8 @@ $(current-dir)-post-build-message:
 
 #	E.g. build-x86_64/dcel/obj/%.o: dcel/src/%.cpp
 $(call module-objects-target, $(current-dir)): $(call module-objects-prerequisites, $(current-dir))
-	$(call make-depend,$$<,$$@,$$(subst .o,.d,$$@),)
-	$(call compile-sources-to-objects,$$@,$$<)
+	$(call make-depend,$$<,$$@,$$(subst .o,.d,$$@),$($(current-dir)-inc))
+	$(call compile-sources-to-objects,$$@,$$<,$($(current-dir)-inc))
 
 #	E.g. build-x86_64/dcel/bin/libdcel.so: build-x86_64/dcel/obj/*.o
 $($(current-dir)-lib): $($(current-dir)-obj)
@@ -109,7 +109,7 @@ $($(current-dir)-test-exe): $($(current-dir)-test-obj)
 #	E.g. build-x86_64/dcel/test/bin/dceltest-target:	build-x86_64/dcel/bin/libdcel.so-target	\
 #														dcel-test-build-message					\
 #														build-x86_64/dcel/test/bin/dceltest		\
-#														dcel-test-post-build-message			\
+#														dcel-test-post-build-message
 .PHONY: $($(current-dir)-test-exe)-target
 $($(current-dir)-test-exe)-target:	$($(current-dir)-lib)-target								\
 									$($(current-dir)-tdp)-build-message							\
