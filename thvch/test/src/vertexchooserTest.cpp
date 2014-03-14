@@ -30,24 +30,24 @@ namespace chtest
 
 	void vertexchooserTest::testCollectionWithPointers()
 	{
-		ch::collection<int*/*, ch::single_deleter*/> c;
-		c.push_back( new int(5) );
-		c.push_back( new int(4) );
-		c.push_back( new int(3) );
+		ch::collection<int*/*, ch::single_deleter*/> c {new int(5), new int(4), new int(3)};
 
 		CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), c.size() );
+		CPPUNIT_ASSERT_EQUAL( 5, *c[0] );
+		CPPUNIT_ASSERT_EQUAL( 4, *c[1] );
+		CPPUNIT_ASSERT_EQUAL( 3, *c[2] );
 	}
 
 	//--------------------------------------------------------------------------
 
 	void vertexchooserTest::testCollectionWithValueType()
 	{
-		ch::collection<int, ch::nop_deleter> c;
-		c.push_back( 5 );
-		c.push_back( 4 );
-		c.push_back( 3 );
+		ch::collection<int, ch::nop_deleter> c {5, 4, 3};
 
 		CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), c.size() );
+		CPPUNIT_ASSERT_EQUAL( 5, c[0] );
+		CPPUNIT_ASSERT_EQUAL( 4, c[1] );
+		CPPUNIT_ASSERT_EQUAL( 3, c[2] );
 	}
 
 	//--------------------------------------------------------------------------

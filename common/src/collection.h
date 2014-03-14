@@ -44,15 +44,21 @@ namespace ch
 	{
 	public:
 		collection();
+		collection(std::initializer_list<T>);
 		~collection();
 
 		void push_back( T&& element );
+		void push_back( const T& element );
 		size_t size() const;
 		const T& operator[](size_t i) const;
 
 	private:
-		const D<T> deleter;
 		std::vector<T> elements;
+		const D<T> deleter;
+
+		char padding[8 - sizeof(deleter) % 8];
+		static_assert(	sizeof(padding) < 8
+						, "Padding is bigger in class collection than it is expected." );
 	};
 }
 

@@ -16,8 +16,15 @@ namespace ch
 {
 	template <typename T, template <typename> class D>
 	collection<T,D>::collection()
-		: deleter( D<T>() )
-		, elements()
+		: elements()
+		, deleter( D<T>() )
+	{
+	}
+
+	template <typename T, template <typename> class D>
+	collection<T,D>::collection( std::initializer_list<T> args )
+		: elements(args)
+		, deleter( D<T>() )
 	{
 	}
 
@@ -34,6 +41,12 @@ namespace ch
 
 	template <typename T, template <typename> class D>
 	void collection<T,D>::push_back( T&& element )
+	{
+		elements.push_back( element );
+	}
+
+	template <typename T, template <typename> class D>
+	void collection<T,D>::push_back( const T& element )
 	{
 		elements.push_back( element );
 	}
