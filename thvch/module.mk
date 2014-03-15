@@ -46,7 +46,7 @@ endef
 
 thvch-test-dir = $(call module-test-directory,thvch)
 thvch-test-src = $(call module-test-sources,$(thvch-test-dir))
-thvch-test-inc = $(call module-test-includes,$(thvch-test-dir))
+thvch-test-inc = $(call module-test-includes,$(thvch-test-dir))  $(addsuffix /include,dh dcel)
 thvch-test-obj = $(call module-test-objects,$(thvch-test-src))
 thvch-test-dep = $(call module-test-dependencies,$(thvch-test-obj))
 thvch-test-exe = $(call module-test-executable,$(thvch-test-dir))

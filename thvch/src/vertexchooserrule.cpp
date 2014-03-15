@@ -15,7 +15,7 @@ namespace ch
 
 
 	template <typename T>
-	vertexchooserrule1st<T>::vertexchooserrule1st() : vertexchooserrule()
+	vertexchooserrule1st<T>::vertexchooserrule1st() : vertexchooserrule<T>()
 	{
 	}
 
@@ -25,7 +25,7 @@ namespace ch
 	}
 
 	template <typename T>
-	void vertexchooserrule1st<T>::chooseVertex( const dataholder<T>& dh, vector<vid_t>& vertices ) const
+	void vertexchooserrule1st<T>::chooseVertex( const dataholder<T>& dh, std::vector<vid_t>& vertices ) const
 	{
 	}
 

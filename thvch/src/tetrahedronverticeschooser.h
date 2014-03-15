@@ -4,7 +4,8 @@
 #ifndef TETRAHEDRONVERTICESCHOOSER_H_
 #define TETRAHEDRONVERTICESCHOOSER_H_
 
-#include "vertexchooser.h"
+#include <vector>
+#include "vertexchooser.cpp"
 
 namespace ch
 {
@@ -15,8 +16,8 @@ namespace ch
 		tetrahedronverticeschooser( const dataholder<T>& dh );
 		~tetrahedronverticeschooser();
 
-		void chooseVertices(const collection<vertexchooserrule>& ruleCollection,
-							vector<vid_t>& vertices ) const override;
+		void chooseVertices(const collection<vertexchooserrule<T>*>& ruleCollection,
+							std::vector<vid_t>& vertices ) const override;
 	};
 }
 

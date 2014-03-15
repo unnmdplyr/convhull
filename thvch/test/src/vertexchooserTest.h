@@ -13,6 +13,7 @@ namespace chtest
 		CPPUNIT_TEST_SUITE( vertexchooserTest );
 		CPPUNIT_TEST( testCollectionWithValueType			);
 		CPPUNIT_TEST( testCollectionWithPointers			);
+		CPPUNIT_TEST( testCollectionWithPointersToObject	);
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -21,6 +22,7 @@ namespace chtest
 
 		void testCollectionWithValueType();
 		void testCollectionWithPointers();
+		void testCollectionWithPointersToObject();
 	};
 }
 

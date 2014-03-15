@@ -4,18 +4,18 @@
 namespace ch
 {
 	template <typename T>
-	tetrahedronverticeschooser<T>::tetrahedronverticeschooser( const dataholder<T>& dh ) : vertexchooser(dh)
+	tetrahedronverticeschooser<T>::tetrahedronverticeschooser( const dataholder<T>& dh ) : vertexchooser<T>(dh)
 	{
 	}
 
 	template <typename T>
-	tetrahedronverticeschooser<T>::~tetrahedronverticeschooser
+	tetrahedronverticeschooser<T>::~tetrahedronverticeschooser()
 	{
 	}
 
 	template <typename T>
-	void tetrahedronverticeschooser<T>::chooseVertices(	const collection<vertexchooserrule>& ruleCollection,
-														vector<vid_t>& vertices ) const
+	void tetrahedronverticeschooser<T>::chooseVertices(	const collection<vertexchooserrule<T>*>& ruleCollection,
+														std::vector<vid_t>& vertices ) const
 	{
 	}
 }
