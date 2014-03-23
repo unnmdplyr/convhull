@@ -4,6 +4,8 @@
 #define DATAHOLDER_H_
 
 #include <cstddef>
+#include <cmath>
+#include <limits>
 
 namespace ch
 {
@@ -11,7 +13,13 @@ namespace ch
 	class vertexdata final
 	{
 	public:
+		static constexpr U epsilon = static_cast<U>(1.1) * std::numeric_limits<U>::epsilon();
+
 		vertexdata( U x_, U y_, U z_ );
+
+		bool operator==( const vertexdata& rhs ) const;
+		bool operator!=( const vertexdata& rhs ) const;
+
 		U x;
 		U y;
 		U z;
@@ -25,7 +33,9 @@ namespace ch
 		virtual ~dataholder();
 
 		dataholder( const dataholder& rhs ) = delete;
+		dataholder( dataholder&& rhs ) = delete;
 		dataholder& operator=( const dataholder& rhs ) = delete;
+		dataholder& operator=( dataholder&& rhs ) = delete;
 
 		virtual vertexdata<T> operator[]( size_t i ) const = 0;
 		virtual size_t size() const = 0;
